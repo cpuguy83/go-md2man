@@ -3,6 +3,7 @@ package mangen
 import (
 	"bytes"
 	"fmt"
+	"strings"
 
 	"github.com/russross/blackfriday"
 )
@@ -15,6 +16,24 @@ func ManRenderer(flags int) blackfriday.Renderer {
 
 func (m *Man) GetFlags() int {
 	return 0
+}
+
+func (m *Man) TitleBlock(out *bytes.Buffer, text []byte) {
+	out.WriteString(".TH ")
+
+	splitText := bytes.Split(text, []byte("\n"))
+	for i, line := range splitText {
+		line = bytes.TrimPrefix(line, []byte("% "))
+		if i == 0 {
+			line = bytes.Replace(line, []byte("("), []byte("\" \""), 1)
+			line = bytes.Replace(line, []byte(")"), []byte("\" \""), 1)
+		}
+		line = append([]byte("\""), line...)
+		line = append(line, []byte("\" ")...)
+		out.Write(line)
+	}
+
+	out.WriteString(" \"\"\n")
 }
 
 func (m *Man) BlockCode(out *bytes.Buffer, text []byte, lang string) {
@@ -38,20 +57,18 @@ func (m *Man) BlockHtml(out *bytes.Buffer, text []byte) {
 func (m *Man) Header(out *bytes.Buffer, text func() bool, level int, id string) {
 	marker := out.Len()
 
-	out.WriteString("\n.")
 	switch level {
 	case 1:
-		out.WriteString("TH ")
+		out.WriteString("\n.SH ")
 	case 2:
-		out.WriteString("SH ")
+		out.WriteString(".SH ")
 	default:
-		out.WriteString("SS ")
+		out.WriteString(".SS ")
 	}
 	if !text() {
 		out.Truncate(marker)
 		return
 	}
-	out.WriteString("\n")
 }
 
 func (m *Man) HRule(out *bytes.Buffer) {
@@ -81,12 +98,14 @@ func (m *Man) ListItem(out *bytes.Buffer, text []byte, flags int) {
 
 func (m *Man) Paragraph(out *bytes.Buffer, text func() bool) {
 	marker := out.Len()
-	out.WriteString("\n.TP\n")
+	out.WriteString("\n.PP\n")
 	if !text() {
 		out.Truncate(marker)
 		return
 	}
-	out.WriteString("\n")
+	if marker != 0 {
+		out.WriteString("\n")
+	}
 }
 
 // TODO: This might now work
@@ -190,20 +209,37 @@ func (m *Man) Entity(out *bytes.Buffer, entity []byte) {
 	out.Write(entity)
 }
 
+func processFooterText(text []byte) []byte {
+	text = bytes.TrimPrefix(text, []byte("% "))
+	newText := []byte{}
+	textArr := strings.Split(string(text), ") ")
+
+	for i, w := range textArr {
+		if i == 0 {
+			w = strings.Replace(w, "(", "\" \"", 1)
+			w = fmt.Sprintf("\"%s\"", w)
+		} else {
+			w = fmt.Sprintf(" \"%s\"", w)
+		}
+		newText = append(newText, []byte(w)...)
+	}
+	newText = append(newText, []byte(" \"\"")...)
+
+	return newText
+}
+
 func (m *Man) NormalText(out *bytes.Buffer, text []byte) {
 	escapeSpecialChars(out, text)
 }
 
-// header and footer
 func (m *Man) DocumentHeader(out *bytes.Buffer) {
-
 }
 
 func (m *Man) DocumentFooter(out *bytes.Buffer) {
 }
 
 func needsBackslash(c byte) bool {
-	for _, r := range []byte("_{}%$&\\~") {
+	for _, r := range []byte("-_{}$&\\~") {
 		if c == r {
 			return true
 		}
