@@ -6,8 +6,8 @@ import (
 	"io/ioutil"
 	"os"
 
+	"github.com/cpuguy83/blackfriday"
 	"github.com/cpuguy83/go-md2man/mangen"
-	"github.com/russross/blackfriday"
 )
 
 var inFilePath = flag.String("in", "", "Path to file to be processed")
