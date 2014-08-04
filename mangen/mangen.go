@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/cpuguy83/blackfriday"
+	"github.com/russross/blackfriday"
 )
 
 type Man struct{}
