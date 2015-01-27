@@ -39,7 +39,7 @@ func (m *Man) TitleBlock(out *bytes.Buffer, text []byte) {
 func (m *Man) BlockCode(out *bytes.Buffer, text []byte, lang string) {
 	out.WriteString("\n.PP\n.RS\n\n.nf\n")
 	escapeSpecialChars(out, text)
-	out.WriteString("\n.fi\n")
+	out.WriteString("\n.fi\n.RE\n")
 }
 
 func (m *Man) BlockQuote(out *bytes.Buffer, text []byte) {
