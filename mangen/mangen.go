@@ -49,7 +49,6 @@ func (m *Man) BlockQuote(out *bytes.Buffer, text []byte) {
 }
 
 func (m *Man) BlockHtml(out *bytes.Buffer, text []byte) {
-	// a pretty lame thing to do...
 	fmt.Errorf("man: BlockHtml not supported")
 	out.Write(text)
 }
@@ -57,14 +56,18 @@ func (m *Man) BlockHtml(out *bytes.Buffer, text []byte) {
 func (m *Man) Header(out *bytes.Buffer, text func() bool, level int, id string) {
 	marker := out.Len()
 
-	switch level {
-	case 1:
+	switch {
+	case marker == 0:
+		// This is the doc header
+		out.WriteString(".TH ")
+	case level == 1:
+		out.WriteString("\n\n.SH ")
+	case level == 2:
 		out.WriteString("\n.SH ")
-	case 2:
-		out.WriteString(".SH ")
 	default:
-		out.WriteString(".SS ")
+		out.WriteString("\n.SS ")
 	}
+
 	if !text() {
 		out.Truncate(marker)
 		return
