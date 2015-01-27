@@ -17,5 +17,5 @@ go-md2man 1 "January 2015" go-md2man "User Manual"
     go-md2man -in=README.md -out=go-md2man.1.out
 
 # HISTORY
-  Janury 2015, Originally compiled by Brian Goff( cpuguy83@gmail.com )
+  January 2015, Originally compiled by Brian Goff( cpuguy83@gmail.com )
 
