@@ -239,7 +239,7 @@ func (m *Man) DocumentFooter(out *bytes.Buffer) {
 }
 
 func needsBackslash(c byte) bool {
-	for _, r := range []byte("-_{}$&\\~") {
+	for _, r := range []byte("-_{}&\\~") {
 		if c == r {
 			return true
 		}
