@@ -190,7 +190,7 @@ func (m *Man) Link(out *bytes.Buffer, link []byte, title []byte, content []byte)
 }
 
 func (m *Man) RawHtmlTag(out *bytes.Buffer, tag []byte) {
-	fmt.Errorf("man: Raw HTML not supported")
+	out.Write(tag)
 }
 
 func (m *Man) TripleEmphasis(out *bytes.Buffer, text []byte) {
