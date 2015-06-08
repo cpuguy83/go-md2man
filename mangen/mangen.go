@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"strings"
+	"html"
 
 	"github.com/russross/blackfriday"
 )
@@ -208,8 +209,7 @@ func (m *Man) FootnoteRef(out *bytes.Buffer, ref []byte, id int) {
 }
 
 func (m *Man) Entity(out *bytes.Buffer, entity []byte) {
-	// TODO: convert this into a unicode character or something
-	out.Write(entity)
+	out.WriteString(html.UnescapeString(string(entity)))
 }
 
 func processFooterText(text []byte) []byte {
