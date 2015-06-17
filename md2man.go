@@ -6,7 +6,6 @@ import (
 	"io/ioutil"
 	"os"
 
-	"github.com/cpuguy83/go-md2man/mangen"
 	"github.com/russross/blackfriday"
 )
 
@@ -29,7 +28,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	renderer := mangen.ManRenderer(0)
+	renderer := RoffRenderer(0)
 	extensions := 0
 	extensions |= blackfriday.EXTENSION_NO_INTRA_EMPHASIS
 	extensions |= blackfriday.EXTENSION_TABLES
