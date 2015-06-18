@@ -205,7 +205,7 @@ func (r *roffRenderer) FootnoteRef(out *bytes.Buffer, ref []byte, id int) {
 
 }
 
-func (m *Man) Entity(out *bytes.Buffer, entity []byte) {
+func (r *roffRenderer) Entity(out *bytes.Buffer, entity []byte) {
 	out.WriteString(html.UnescapeString(string(entity)))
 }
 
