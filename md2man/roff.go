@@ -1,4 +1,4 @@
-package main
+package md2man
 
 import (
 	"bytes"
