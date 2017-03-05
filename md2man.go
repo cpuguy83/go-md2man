@@ -28,7 +28,7 @@ func main() {
 	if *inFilePath != "" {
 		inFile, err = os.Open(*inFilePath)
 		if err != nil {
-			fmt.Println(err)
+			fmt.Fprintln(os.Stderr, err)
 			os.Exit(1)
 		}
 	}
@@ -36,12 +36,12 @@ func main() {
 
 	doc, err := ioutil.ReadAll(inFile)
 	if err != nil {
-		fmt.Println(err)
+		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)
 	}
 
 	if len(doc) == 0 {
-		fmt.Println("Input must be non-zero in length")
+		fmt.Println(os.Stderr, "Input must be non-zero in length")
 		os.Exit(1)
 	}
 
@@ -51,14 +51,14 @@ func main() {
 	if *outFilePath != "" {
 		outFile, err = os.Create(*outFilePath)
 		if err != nil {
-			fmt.Println(err)
+			fmt.Fprintln(os.Stderr, err)
 			os.Exit(1)
 		}
 		defer outFile.Close() // nolint: errcheck
 	}
 	_, err = outFile.Write(out)
 	if err != nil {
-		fmt.Println(err)
+		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)
 	}
 }
