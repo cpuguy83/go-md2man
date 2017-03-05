@@ -9,12 +9,20 @@ import (
 	"github.com/cpuguy83/go-md2man/md2man"
 )
 
+var Version string
+
 var inFilePath = flag.String("in", "", "Path to file to be processed (default: stdin)")
 var outFilePath = flag.String("out", "", "Path to output processed file (default: stdout)")
+var version = flag.Bool("v", false, "prints current md2man version")
 
 func main() {
 	var err error
 	flag.Parse()
+
+	if *version {
+		fmt.Println(Version)
+		os.Exit(0)
+	}
 
 	inFile := os.Stdin
 	if *inFilePath != "" {
