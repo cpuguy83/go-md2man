@@ -1,0 +1,20 @@
+dependencies:
+  pre:
+    - make circleci
+  override:
+    - make deps
+    - make build
+  post:
+    - tar -czvf $CIRCLE_ARTIFACTS/md2man-linux.tgz -C build/Linux md2man
+    - tar -czvf $CIRCLE_ARTIFACTS/md2man-darwin.tgz -C build/Darwin md2man
+    - tar -czvf $CIRCLE_ARTIFACTS/go-workspace.tgz -C ~/.go_workspace .
+
+test:
+  override:
+    - make test
+
+deployment:
+  release:
+    branch: release
+    commands:
+      - make release
