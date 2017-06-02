@@ -118,11 +118,23 @@ func (r *roffRenderer) Paragraph(out *bytes.Buffer, text func() bool) {
 	}
 }
 
-// TODO: This might now work
 func (r *roffRenderer) Table(out *bytes.Buffer, header []byte, body []byte, columnData []int) {
-	out.WriteString(".TS\nallbox;\n")
+	out.WriteString("\n.TS\nallbox;\n")
 
+	max_delims := 0
+	lines := strings.Split(strings.TrimRight(string(header), "\n") + "\n" + strings.TrimRight(string(body), "\n"), "\n")
+	for _, w := range lines {
+		cur_delims := strings.Count(w, "\t")
+		if cur_delims > max_delims {
+			max_delims = cur_delims
+		}
+	}
+	out.Write([]byte(strings.Repeat("l ", max_delims + 1) + "\n"))
+	out.Write([]byte(strings.Repeat("l ", max_delims + 1) + ".\n"))
 	out.Write(header)
+	if len(header) > 0 {
+		out.Write([]byte("\n"))
+	}
 	out.Write(body)
 	out.WriteString("\n.TE\n")
 }
@@ -132,24 +144,24 @@ func (r *roffRenderer) TableRow(out *bytes.Buffer, text []byte) {
 		out.WriteString("\n")
 	}
 	out.Write(text)
-	out.WriteString("\n")
 }
 
 func (r *roffRenderer) TableHeaderCell(out *bytes.Buffer, text []byte, align int) {
 	if out.Len() > 0 {
-		out.WriteString(" ")
+		out.WriteString("\t")
 	}
-	out.Write(text)
-	out.WriteString(" ")
+	out.Write([]byte("\\fB\\fC" + string(text) + "\\fR"))
 }
 
-// TODO: This is probably broken
 func (r *roffRenderer) TableCell(out *bytes.Buffer, text []byte, align int) {
 	if out.Len() > 0 {
 		out.WriteString("\t")
 	}
-	out.Write(text)
-	out.WriteString("\t")
+	if len(text) > 30 {
+		out.Write([]byte("T{\n" + string(text) + "\nT}"))
+	} else {
+		out.Write(text)
+	}
 }
 
 func (r *roffRenderer) Footnotes(out *bytes.Buffer, text func() bool) {
