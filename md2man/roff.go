@@ -122,19 +122,20 @@ func (r *roffRenderer) Table(out *bytes.Buffer, header []byte, body []byte, colu
 	out.WriteString("\n.TS\nallbox;\n")
 
 	max_delims := 0
-	lines := strings.Split(strings.TrimRight(string(header), "\n") + "\n" + strings.TrimRight(string(body), "\n"), "\n")
+	lines := strings.Split(strings.TrimRight(string(header), "\n")+"\n"+strings.TrimRight(string(body), "\n"), "\n")
 	for _, w := range lines {
 		cur_delims := strings.Count(w, "\t")
 		if cur_delims > max_delims {
 			max_delims = cur_delims
 		}
 	}
-	out.Write([]byte(strings.Repeat("l ", max_delims + 1) + "\n"))
-	out.Write([]byte(strings.Repeat("l ", max_delims + 1) + ".\n"))
+	out.Write([]byte(strings.Repeat("l ", max_delims+1) + "\n"))
+	out.Write([]byte(strings.Repeat("l ", max_delims+1) + ".\n"))
 	out.Write(header)
 	if len(header) > 0 {
 		out.Write([]byte("\n"))
 	}
+
 	out.Write(body)
 	out.WriteString("\n.TE\n")
 }
@@ -150,6 +151,9 @@ func (r *roffRenderer) TableHeaderCell(out *bytes.Buffer, text []byte, align int
 	if out.Len() > 0 {
 		out.WriteString("\t")
 	}
+	if len(text) == 0 {
+		text = []byte{' '}
+	}
 	out.Write([]byte("\\fB\\fC" + string(text) + "\\fR"))
 }
 
@@ -158,10 +162,13 @@ func (r *roffRenderer) TableCell(out *bytes.Buffer, text []byte, align int) {
 		out.WriteString("\t")
 	}
 	if len(text) > 30 {
-		out.Write([]byte("T{\n" + string(text) + "\nT}"))
-	} else {
-		out.Write(text)
+		text = append([]byte("T{\n"), text...)
+		text = append(text, []byte("\nT}")...)
 	}
+	if len(text) == 0 {
+		text = []byte{' '}
+	}
+	out.Write(text)
 }
 
 func (r *roffRenderer) Footnotes(out *bytes.Buffer, text func() bool) {
