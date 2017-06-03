@@ -39,7 +39,7 @@ clean:
 deps:
 	dep ensure -vendor-only
 
-test: src
-	true
+test:
+	cd md2man && go test
 
 .PHONY: build build-cross build-darwin build-linux check clean deps test

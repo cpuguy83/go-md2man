@@ -55,6 +55,15 @@ make build-cross
 This will create two builds in the `build` directory for Darwin and 
 Linux targets.
 
+## Running tests
+
+After installing dependencies, you can run tests by using the following
+`make` target:
+
+```shell
+make test
+```
+
 ## Contributing
 
 Pull requests are welcome! go-md2man is written in Golang.
