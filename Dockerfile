@@ -10,5 +10,5 @@ RUN VERSION="$(git rev-parse --abbrev-ref HEAD)" \
     && go build -ldflags "-X main.Version=$VERSION"
 
 FROM scratch
-COPY --from=build /go/src/github.com/cpuguy83/go-md2man/go-md2man /bin/md2man
-ENTRYPOINT ["/bin/md2man"]
+COPY --from=build /go/src/github.com/cpuguy83/go-md2man/go-md2man /go-md2man
+ENTRYPOINT ["/go-md2man"]
