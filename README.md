@@ -25,16 +25,10 @@ md2man -in README.md -out README.man
 ### Dependencies
 
 We use [govend](https://github.com/govend/govend) for vendoring Go packages.
-You can install dependencies with the following `make` target:
+You can install or update dependencies with the following `make` target:
 
 ```shell
 make deps
-```
-
-Updating dependencies can be done as follows:
-
-```shell
-make deps-update
 ```
 
 ### Building
@@ -47,12 +41,7 @@ make build
 ```
 
 This will create two builds in the `build` directory for Darwin and 
-Linux targets. You can install them via the following `make` target:
-
-```shell
-# requires a writeable /usr/local/bin
-make install
-```
+Linux targets.
 
 ## Contributing
 
