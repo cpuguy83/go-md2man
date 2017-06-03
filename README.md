@@ -33,11 +33,23 @@ make deps
 
 ### Building
 
-You can create a build by using the following `make` target:
+You can create a build by using the following `make` targets:
 
 ```shell
-# requires Golang with cross-compile support for Darwin and Linux
+# builds a version for your OS (Darwin/Linux currently supported)
 make build
+
+# requires Golang with compile support for Darwin
+# binary will be available in build/Darwin/md2man
+make build-darwin
+
+# requires Golang with compile support for Linux
+# binary will be available in build/Linux/md2man
+make build-linux
+
+# requires Golang with cross-compile support for Darwin and Linux
+# binaries will be available in build/Darwin/md2man and build/Linux/md2man
+make build-cross
 ```
 
 This will create two builds in the `build` directory for Darwin and 

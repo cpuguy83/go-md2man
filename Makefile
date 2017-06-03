@@ -4,7 +4,12 @@ OWNER=cpuguy83
 ARCH=$(shell uname -m)
 VERSION=0.0.0
 
-build: build-darwin build-linux
+build:
+	go build -a \
+		-installsuffix cgo \
+		-ldflags "-X main.Version=$(VERSION)"
+
+build-cross: build-darwin build-linux
 
 build-linux:
 	mkdir -p build/Linux && GOOS=linux CGO_ENABLED=0 go build -a \
@@ -37,4 +42,4 @@ deps:
 test: src
 	true
 
-.PHONY: build build-darwin build-linux check clean deps test
+.PHONY: build build-cross build-darwin build-linux check clean deps test
