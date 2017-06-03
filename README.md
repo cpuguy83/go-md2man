@@ -45,17 +45,12 @@ Linux targets.
 
 ## Contributing
 
-Pull requests are welcome! Herokuish is written in Bash and Go. Please conform to the [Bash styleguide](https://github.com/progrium/bashstyle) used for this project when writing Bash.
+Pull requests are welcome! go-md2man is written in Golang.
 
-Developers should have Go installed with cross-compile support for Darwin and Linux. Tests will require Docker to be available. If you have OS X, we recommend boot2docker.
+To ensure that builds work across all platforms, developers should have
+Go installed with cross-compile support for Darwin and Linux.
 
-For help and discussion beyond Github Issues, join us on Freenode in `#gliderlabs`.
-
-## Releases
-
-Anybody can propose a release. First bump the version in `Makefile`, make sure `CHANGELOG.md` is up to date, and make sure tests are passing. Then open a Pull Request from `master` into the `release` branch. Once a maintainer approves and merges, CircleCI will build a release and upload it to Github.
-
-### TODO
+## TODO
 
 - Needs oh so much testing love
 - Look into blackfriday's 2.0 API
