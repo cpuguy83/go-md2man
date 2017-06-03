@@ -2,7 +2,7 @@ NAME=go-md2man
 BINARYNAME=md2man
 OWNER=cpuguy83
 ARCH=$(shell uname -m)
-VERSION=0.0.0
+VERSION=1.0.6
 
 build:
 	go build -a \
