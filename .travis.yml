@@ -4,10 +4,7 @@ go:
   - 1.8.x
   - 1.9.x
   - tip
+install:
+  - make deps deps-dev
 script:
-  - script/setup/dev-tools
-  - script/validate/vendor
-  - go build -i .
-  - make check
-  - go build
-  - go test -v ./...
+  - make check build test

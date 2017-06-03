@@ -24,14 +24,8 @@ build-darwin:
 		-o build/Darwin/$(BINARYNAME)
 
 check:
+	script/validate/vendor
 	gometalinter --config .gometalinter.json ./...
-
-circleci:
-	rm ~/.gitconfig
-	rm -rf /home/ubuntu/.go_workspace/src/github.com/$(OWNER)/$(NAME) && cd .. \
-		&& mkdir -p /home/ubuntu/.go_workspace/src/github.com/$(OWNER) \
-		&& mv $(NAME) /home/ubuntu/.go_workspace/src/github.com/$(OWNER)/$(NAME) \
-		&& ln -s /home/ubuntu/.go_workspace/src/github.com/$(OWNER)/$(NAME) $(NAME)
 
 clean:
 	rm -rf build
@@ -39,7 +33,10 @@ clean:
 deps:
 	dep ensure -vendor-only
 
-test:
-	cd md2man && go test
+deps-dev:
+	script/setup/dev-tools
 
-.PHONY: build build-cross build-darwin build-linux check clean deps test
+test:
+	go test -v ./...
+
+.PHONY: build build-cross build-darwin build-linux check clean deps deps-dev test
