@@ -9,9 +9,10 @@ import (
 	"github.com/russross/blackfriday"
 )
 
-type roffRenderer struct{}
+type roffRenderer struct{
+    ListCounters []int
+}
 
-var listCounter int
 
 func RoffRenderer(flags int) blackfriday.Renderer {
 	return &roffRenderer{}
@@ -86,19 +87,21 @@ func (r *roffRenderer) HRule(out *bytes.Buffer) {
 
 func (r *roffRenderer) List(out *bytes.Buffer, text func() bool, flags int) {
 	marker := out.Len()
-	if flags&blackfriday.LIST_TYPE_ORDERED != 0 {
-		listCounter = 1
-	}
+	r.ListCounters = append(r.ListCounters, 1)
+	out.WriteString("\n.RS\n")
 	if !text() {
 		out.Truncate(marker)
 		return
 	}
+	r.ListCounters = r.ListCounters[:len(r.ListCounters) - 1]
+	out.WriteString("\n.RE\n")
 }
 
 func (r *roffRenderer) ListItem(out *bytes.Buffer, text []byte, flags int) {
 	if flags&blackfriday.LIST_TYPE_ORDERED != 0 {
-		out.WriteString(fmt.Sprintf(".IP \"%3d.\" 5\n", listCounter))
-		listCounter += 1
+		out.WriteString(fmt.Sprintf(".IP \"%3d.\" 5\n",
+			r.ListCounters[len(r.ListCounters) - 1]))
+		r.ListCounters[len(r.ListCounters) - 1] += 1
 	} else {
 		out.WriteString(".IP \\(bu 2\n")
 	}
