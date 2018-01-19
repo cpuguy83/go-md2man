@@ -3,6 +3,7 @@
 	"Deadline": "2m",
 	"Sort": ["linter", "severity", "path", "line"],
 	"Enable": [
+		"errcheck",
 		"structcheck",
 		"unused",
 		"varcheck",
