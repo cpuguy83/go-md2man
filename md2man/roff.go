@@ -238,25 +238,6 @@ func (r *roffRenderer) Entity(out *bytes.Buffer, entity []byte) {
 	out.WriteString(html.UnescapeString(string(entity)))
 }
 
-func processFooterText(text []byte) []byte {
-	text = bytes.TrimPrefix(text, []byte("% "))
-	newText := []byte{}
-	textArr := strings.Split(string(text), ") ")
-
-	for i, w := range textArr {
-		if i == 0 {
-			w = strings.Replace(w, "(", "\" \"", 1)
-			w = fmt.Sprintf("\"%s\"", w)
-		} else {
-			w = fmt.Sprintf(" \"%s\"", w)
-		}
-		newText = append(newText, []byte(w)...)
-	}
-	newText = append(newText, []byte(" \"\"")...)
-
-	return newText
-}
-
 func (r *roffRenderer) NormalText(out *bytes.Buffer, text []byte) {
 	escapeSpecialChars(out, text)
 }
