@@ -13,6 +13,8 @@ type roffRenderer struct {
 	ListCounters []int
 }
 
+// RoffRenderer creates a new blackfriday Renderer for generating roff documents
+// from markdown
 func RoffRenderer(flags int) blackfriday.Renderer {
 	return &roffRenderer{}
 }
@@ -55,7 +57,7 @@ func (r *roffRenderer) BlockQuote(out *bytes.Buffer, text []byte) {
 	out.WriteString("\n.RE\n")
 }
 
-func (r *roffRenderer) BlockHtml(out *bytes.Buffer, text []byte) {
+func (r *roffRenderer) BlockHtml(out *bytes.Buffer, text []byte) { // nolint: golint
 	out.Write(text)
 }
 
@@ -98,9 +100,8 @@ func (r *roffRenderer) List(out *bytes.Buffer, text func() bool, flags int) {
 
 func (r *roffRenderer) ListItem(out *bytes.Buffer, text []byte, flags int) {
 	if flags&blackfriday.LIST_TYPE_ORDERED != 0 {
-		out.WriteString(fmt.Sprintf(".IP \"%3d.\" 5\n",
-			r.ListCounters[len(r.ListCounters)-1]))
-		r.ListCounters[len(r.ListCounters)-1] += 1
+		out.WriteString(fmt.Sprintf(".IP \"%3d.\" 5\n", r.ListCounters[len(r.ListCounters)-1]))
+		r.ListCounters[len(r.ListCounters)-1]++
 	} else {
 		out.WriteString(".IP \\(bu 2\n")
 	}
@@ -123,16 +124,16 @@ func (r *roffRenderer) Paragraph(out *bytes.Buffer, text func() bool) {
 func (r *roffRenderer) Table(out *bytes.Buffer, header []byte, body []byte, columnData []int) {
 	out.WriteString("\n.TS\nallbox;\n")
 
-	max_delims := 0
+	maxDelims := 0
 	lines := strings.Split(strings.TrimRight(string(header), "\n")+"\n"+strings.TrimRight(string(body), "\n"), "\n")
 	for _, w := range lines {
-		cur_delims := strings.Count(w, "\t")
-		if cur_delims > max_delims {
-			max_delims = cur_delims
+		curDelims := strings.Count(w, "\t")
+		if curDelims > maxDelims {
+			maxDelims = curDelims
 		}
 	}
-	out.Write([]byte(strings.Repeat("l ", max_delims+1) + "\n"))
-	out.Write([]byte(strings.Repeat("l ", max_delims+1) + ".\n"))
+	out.Write([]byte(strings.Repeat("l ", maxDelims+1) + "\n"))
+	out.Write([]byte(strings.Repeat("l ", maxDelims+1) + ".\n"))
 	out.Write(header)
 	if len(header) > 0 {
 		out.Write([]byte("\n"))
@@ -217,7 +218,7 @@ func (r *roffRenderer) Link(out *bytes.Buffer, link []byte, title []byte, conten
 	r.AutoLink(out, link, 0)
 }
 
-func (r *roffRenderer) RawHtmlTag(out *bytes.Buffer, tag []byte) {
+func (r *roffRenderer) RawHtmlTag(out *bytes.Buffer, tag []byte) { // nolint: golint
 	out.Write(tag)
 }
 
