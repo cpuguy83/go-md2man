@@ -51,7 +51,7 @@ func TestTableCell(t *testing.T) {
 	r.TableCell(buf, cell, 0)
 	expected := " "
 	if buf.String() != expected {
-		t.Fatal("expected %q, got %q", expected, buf.String())
+		t.Fatalf("expected %q, got %q", expected, buf.String())
 	}
 
 	r.TableCell(buf, cell, 0)
