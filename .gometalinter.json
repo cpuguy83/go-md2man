@@ -3,16 +3,18 @@
 	"Deadline": "2m",
 	"Sort": ["linter", "severity", "path", "line"],
 	"Enable": [
+		"deadcode",
 		"errcheck",
 		"structcheck",
 		"unused",
 		"varcheck",
-		"staticcheck",
 		"unconvert",
 		"gofmt",
 		"goimports",
 		"golint",
 		"ineffassign",
-		"vet"
+		"vet",
+		"goconst",
+		"megacheck"
 	]
 }
