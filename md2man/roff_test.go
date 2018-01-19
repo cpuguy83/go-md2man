@@ -5,6 +5,20 @@ import (
 	"testing"
 )
 
+func TestTitleBlock(t *testing.T) {
+	r := &roffRenderer{}
+	buf := bytes.NewBuffer(nil)
+
+	title := []byte("% stuff\n% more stuff\n% even more stuff")
+
+	r.TitleBlock(buf, title)
+	expected := ".TH \"stuff\" \"more stuff\" \"even more stuff\" \n.nh\n.ad l\n"
+	actual := buf.String()
+	if expected != actual {
+		t.Fatalf("expected:\n%s\nactual:\n%s", expected, actual)
+	}
+}
+
 func TestBlockCode(t *testing.T) {
 	r := &roffRenderer{}
 	buf := bytes.NewBuffer(nil)
