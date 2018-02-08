@@ -192,6 +192,14 @@ func TestCodeSpan(t *testing.T) {
 	doTestsInline(t, tests)
 }
 
+func TestListLists(t *testing.T) {
+	var tests = []string{
+		"\n\n**[grpc]**\n: Section for gRPC socket listener settings. Contains three properties:\n - **address** (Default: \"/run/containerd/containerd.sock\")\n - **uid** (Default: 0)\n - **gid** (Default: 0)",
+		".nh\n\n.TP\n\\fB[grpc]\\fP\nSection for gRPC socket listener settings. Contains three properties:\n.RS\n.IP \\(bu 2\n\\fBaddress\\fP (Default: \"/run/containerd/containerd.sock\")\n.IP \\(bu 2\n\\fBuid\\fP (Default: 0)\n.IP \\(bu 2\n\\fBgid\\fP (Default: 0)\n\n.RE\n\n",
+	}
+	doTestsParam(t, tests, TestParams{blackfriday.DefinitionLists})
+}
+
 func TestLineBreak(t *testing.T) {
 	var tests = []string{
 		"this line  \nhas a break\n",

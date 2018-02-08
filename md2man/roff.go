@@ -16,7 +16,7 @@ type roffRenderer struct {
 	listCounters []int
 	firstHeader  bool
 	defineTerm   bool
-	inList       bool
+	listDepth    int
 }
 
 const (
@@ -124,7 +124,7 @@ func (r *roffRenderer) RenderNode(w io.Writer, node *blackfriday.Node, entering 
 		break
 	case blackfriday.Paragraph:
 		// roff .PP markers break lists
-		if r.inList {
+		if r.listDepth > 0 {
 			return blackfriday.GoToNext
 		}
 		if entering {
@@ -208,7 +208,7 @@ func (r *roffRenderer) handleList(w io.Writer, node *blackfriday.Node, entering 
 		closeTag = ""
 	}
 	if entering {
-		r.inList = true
+		r.listDepth++
 		if node.ListFlags&blackfriday.ListTypeOrdered != 0 {
 			r.listCounters = append(r.listCounters, 1)
 		}
@@ -218,7 +218,7 @@ func (r *roffRenderer) handleList(w io.Writer, node *blackfriday.Node, entering 
 			r.listCounters = r.listCounters[:len(r.listCounters)-1]
 		}
 		out(w, closeTag)
-		r.inList = false
+		r.listDepth--
 	}
 }
 
