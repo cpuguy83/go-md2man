@@ -231,6 +231,37 @@ func TestLineBreak(t *testing.T) {
 		extensions: blackfriday.BackslashLineBreak})
 }
 
+func TestTable(t *testing.T) {
+	var tests = []string{
+		`
+| Animal               | Color         |
+| --------------| --- |
+| elephant        | Gray. The elephant is very gray.  |
+| wombat     | No idea.      |
+| zebra        | Sometimes black and sometimes white, depending on the stripe.     |
+| robin | red. |
+`,
+		`.nh
+
+.TS
+allbox;
+l l 
+l l .
+\fB\fCAnimal\fR	\fB\fCColor\fR
+elephant	T{
+Gray. The elephant is very gray.
+T}
+wombat	No idea.
+zebra	T{
+Sometimes black and sometimes white, depending on the stripe.
+T}
+robin	red.
+.TE
+`,
+	}
+	doTestsInlineParam(t, tests, TestParams{blackfriday.Tables})
+}
+
 func execRecoverableTestSuite(t *testing.T, tests []string, params TestParams, suite func(candidate *string)) {
 	// Catch and report panics. This is useful when running 'go test -v' on
 	// the integration server. When developing, though, crash dump is often

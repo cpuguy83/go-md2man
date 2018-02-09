@@ -44,8 +44,8 @@ const (
 	listCloseTag     = "\n.RE\n"
 	arglistTag       = "\n.TP\n"
 	tableStart       = "\n.TS\nallbox;\n"
-	tableEnd         = "\n.TE\n"
-	tableCellStart   = "\nT{\n"
+	tableEnd         = ".TE\n"
+	tableCellStart   = "T{\n"
 	tableCellEnd     = "\nT}\n"
 )
 
@@ -156,10 +156,9 @@ func (r *roffRenderer) RenderNode(w io.Writer, node *blackfriday.Node, entering 
 		r.handleTableCell(w, node, entering)
 	case blackfriday.TableHead:
 	case blackfriday.TableBody:
+	case blackfriday.TableRow:
 		// no action as cell entries do all the nroff formatting
 		return blackfriday.GoToNext
-	case blackfriday.TableRow:
-		out(w, "\n")
 	default:
 		fmt.Fprintf(os.Stderr, "WARNING: go-md2man does not handle node type "+node.Type.String())
 	}
@@ -170,10 +169,16 @@ func (r *roffRenderer) handleText(w io.Writer, node *blackfriday.Node, entering 
 	var (
 		start, end string
 	)
+	// handle special roff table cell text encapsulation
 	if node.Parent.Type == blackfriday.TableCell {
 		if len(node.Literal) > 30 {
 			start = tableCellStart
 			end = tableCellEnd
+		} else {
+			// end rows that aren't terminated by "tableCellEnd" with a cr if end of row
+			if node.Parent.Next == nil && !node.Parent.IsHeader {
+				end = crTag
+			}
 		}
 	}
 	out(w, start)
@@ -266,10 +271,16 @@ func (r *roffRenderer) handleTableCell(w io.Writer, node *blackfriday.Node, ente
 		end = codespanCloseTag
 	}
 	if entering {
-		if node.Prev.Type == blackfriday.TableCell {
+		if node.Prev != nil && node.Prev.Type == blackfriday.TableCell {
 			out(w, "\t"+start)
+		} else {
+			out(w, start)
 		}
 	} else {
+		// need to carriage return if we are at the end of the header row
+		if node.IsHeader && node.Next == nil {
+			end = end + crTag
+		}
 		out(w, end)
 	}
 }
@@ -286,11 +297,12 @@ func countColumns(node *blackfriday.Node) int {
 				return blackfriday.Terminate
 			}
 		case blackfriday.TableCell:
-			columns++
+			if entering {
+				columns++
+			}
 		default:
-			return blackfriday.GoToNext
 		}
-		return blackfriday.Terminate
+		return blackfriday.GoToNext
 	})
 	return columns
 }
