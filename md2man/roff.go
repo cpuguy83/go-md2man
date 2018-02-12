@@ -160,7 +160,7 @@ func (r *roffRenderer) RenderNode(w io.Writer, node *blackfriday.Node, entering 
 		// no action as cell entries do all the nroff formatting
 		return blackfriday.GoToNext
 	default:
-		fmt.Fprintf(os.Stderr, "WARNING: go-md2man does not handle node type "+node.Type.String())
+		fmt.Fprintln(os.Stderr, "WARNING: go-md2man does not handle node type "+node.Type.String())
 	}
 	return walkAction
 }
