@@ -108,10 +108,8 @@ func (r *roffRenderer) RenderNode(w io.Writer, node *blackfriday.Node, entering 
 			out(w, strongCloseTag)
 		}
 	case blackfriday.Link:
-		if entering {
-			out(w, linkTag+string(node.LinkData.Destination))
-		} else {
-			out(w, linkCloseTag)
+		if !entering {
+			out(w, linkTag+string(node.LinkData.Destination)+linkCloseTag)
 		}
 	case blackfriday.Image:
 		// ignore images
