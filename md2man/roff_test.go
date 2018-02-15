@@ -270,6 +270,14 @@ robin	red.
 	doTestsInlineParam(t, tests, TestParams{blackfriday.Tables})
 }
 
+func TestLinks(t *testing.T) {
+	var tests = []string{
+		"See [docs](https://docs.docker.com/) for\nmore",
+		".nh\n\n.PP\nSee docs\n\\[la]https://docs.docker.com/\\[ra] for\nmore\n",
+	}
+	doTestsInline(t, tests)
+}
+
 func execRecoverableTestSuite(t *testing.T, tests []string, params TestParams, suite func(candidate *string)) {
 	// Catch and report panics. This is useful when running 'go test -v' on
 	// the integration server. When developing, though, crash dump is often
