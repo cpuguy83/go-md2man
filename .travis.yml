@@ -5,6 +5,6 @@ go:
   - 1.9.x
   - tip
 install:
-  - make deps deps-dev
+  - make deps-dev deps
 script:
   - make check build test
