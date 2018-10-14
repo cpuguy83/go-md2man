@@ -41,7 +41,7 @@ func main() {
 	}
 
 	if len(doc) == 0 {
-		fmt.Println(os.Stderr, "Input must be non-zero in length")
+		fmt.Fprintln(os.Stderr, "Input must be non-zero in length")
 		os.Exit(1)
 	}
 
