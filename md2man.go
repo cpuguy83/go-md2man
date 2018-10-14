@@ -32,6 +32,11 @@ func main() {
 		os.Exit(1)
 	}
 
+	if len(doc) == 0 {
+		fmt.Println("Input must be non-zero in length")
+		os.Exit(1)
+	}
+
 	out := md2man.Render(doc)
 
 	outFile := os.Stdout
