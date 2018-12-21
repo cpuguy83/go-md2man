@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
 set -eu -o pipefail
 
-dep ensure
+GO111MODULE=on
+make mod
+make vendor
 
 DIFF_PATH="vendor/"
 DIFF=$(git status --porcelain -- "$DIFF_PATH")

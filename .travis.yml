@@ -7,7 +7,6 @@ go:
 script:
   - script/setup/dev-tools
   - script/validate/vendor
-  - go build -i .
   - make check
-  - go build
+  - make build
   - go test -v ./...

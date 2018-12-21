@@ -6,7 +6,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/russross/blackfriday"
+	"github.com/russross/blackfriday/v2"
 )
 
 // roffRenderer implements the blackfriday.Renderer interface for creating
