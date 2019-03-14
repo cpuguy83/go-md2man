@@ -1,12 +1,22 @@
 language: go
 go:
-  - 1.x
-  - 1.8.x
-  - 1.9.x
+  - "1.8.x"
+  - "1.9.x"
+  - "1.10.x"
+  - "1.11.x"
+  - "stable"
   - tip
+
+matrix:
+  include:
+    - go: "stable"
+      env: GOLINT=true
+  allow_failures:
+    - go: tip
+
 script:
-  - script/setup/dev-tools
+  - if [ ! -z "${GOLINT}" ]; then script/setup/dev-tools; fi
   - go build -i .
-  - make check
+  - if [ ! -z "${GOLINT}" ]; then make check; fi
   - go build
   - go test -v ./...
