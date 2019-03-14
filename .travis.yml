@@ -8,15 +8,12 @@ go:
   - tip
 
 matrix:
-  include:
-    - go: "stable"
-      env: GOLINT=true
   allow_failures:
     - go: tip
 
 script:
-  - if [ ! -z "${GOLINT}" ]; then script/setup/dev-tools; fi
+  - if [ "${TRAVIS_GO_VERSION}" = "stable" ]; then script/setup/dev-tools; fi
   - go build -i .
-  - if [ ! -z "${GOLINT}" ]; then make check; fi
+  - if [ "${TRAVIS_GO_VERSION}" = "stable" ]; then echo running check scripts; make check; fi
   - go build
   - go test -v ./...
