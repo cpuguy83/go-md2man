@@ -7,12 +7,16 @@ go:
   - "stable"
   - tip
 
+env:
+  - GO111MODULE: "on"
+
 matrix:
   allow_failures:
     - go: tip
 
 script:
-  - if [ "${TRAVIS_GO_VERSION}" = "stable" ]; then make golangci-lint
+  - if [ "${TRAVIS_GO_VERSION}" = "stable" ]; then make check-mod; fi
+  - if [ "${TRAVIS_GO_VERSION}" = "stable" ]; then make golangci-lint; fi
   - if [ "${TRAVIS_GO_VERSION}" = "stable" ]; then echo running check scripts; make check; fi
   - make build
   - make TEST_FLAGS="-v" test
