@@ -6,7 +6,6 @@ go:
   - tip
 script:
   - script/setup/dev-tools
-  - script/validate/vendor
   - go build -i .
   - make check
   - go build
