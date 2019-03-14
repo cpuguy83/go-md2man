@@ -12,8 +12,7 @@ matrix:
     - go: tip
 
 script:
-  - if [ "${TRAVIS_GO_VERSION}" = "stable" ]; then script/setup/dev-tools; fi
-  - go build -i .
+  - if [ "${TRAVIS_GO_VERSION}" = "stable" ]; then make golangci-lint
   - if [ "${TRAVIS_GO_VERSION}" = "stable" ]; then echo running check scripts; make check; fi
-  - go build
-  - go test -v ./...
+  - make build
+  - make TEST_FLAGS="-v" test
