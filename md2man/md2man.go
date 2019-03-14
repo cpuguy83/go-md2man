@@ -1,7 +1,7 @@
 package md2man
 
 import (
-	"github.com/russross/blackfriday"
+	"github.com/russross/blackfriday/v2"
 )
 
 // Render converts a markdown document into a roff formatted document.

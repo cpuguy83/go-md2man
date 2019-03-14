@@ -4,7 +4,7 @@ set -e
 
 exit_code=0
 
-make mod
+make vendor
 git diff --exit-code go.mod go.sum || exit_code=$?
 
 if [ ${exit_code} -eq 0 ]; then

@@ -3,7 +3,7 @@ package md2man
 import (
 	"testing"
 
-	"github.com/russross/blackfriday"
+	"github.com/russross/blackfriday/v2"
 )
 
 type TestParams struct {
