@@ -1,2 +1,3 @@
+.PHONY: check
 check:
-	gometalinter --config .gometalinter.json ./...
+	golangci-lint run
