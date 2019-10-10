@@ -310,7 +310,7 @@ func out(w io.Writer, output string) {
 }
 
 func needsBackslash(c byte) bool {
-	for _, r := range []byte("-_&\\~") {
+	for _, r := range []byte("-_&\\") {
 		if c == r {
 			return true
 		}
