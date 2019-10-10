@@ -278,6 +278,14 @@ func TestLinks(t *testing.T) {
 	doTestsInline(t, tests)
 }
 
+func TestEscapeCharacters(t *testing.T) {
+	var tests = []string{
+		"Test-one_two&three\\four~five",
+		".nh\n\n.PP\nTest\\-one\\_two\\&three\\\\four~five\n",
+	}
+	doTestsInline(t, tests)
+}
+
 func execRecoverableTestSuite(t *testing.T, tests []string, params TestParams, suite func(candidate *string)) {
 	// Catch and report panics. This is useful when running 'go test -v' on
 	// the integration server. When developing, though, crash dump is often
