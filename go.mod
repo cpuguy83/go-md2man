@@ -1,6 +1,6 @@
 module github.com/cpuguy83/go-md2man/v2
 
-go 1.12
+go 1.11
 
 require (
 	github.com/pmezard/go-difflib v1.0.0 // indirect
