@@ -44,7 +44,7 @@ const (
 	listCloseTag     = "\n.RE\n"
 	arglistTag       = "\n.TP\n"
 	tableStart       = "\n.TS\nallbox;\n"
-	tableEnd         = ".TE\n"
+	tableEnd         = "\n.TE\n"
 	tableCellStart   = "T{\n"
 	tableCellEnd     = "\nT}\n"
 )
