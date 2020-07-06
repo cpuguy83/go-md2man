@@ -264,6 +264,7 @@ zebra	T{
 Sometimes black and sometimes white, depending on the stripe.
 T}
 robin	red.
+
 .TE
 `,
 	}
