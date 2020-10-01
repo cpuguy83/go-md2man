@@ -1,3 +1,7 @@
+arch:
+  - amd64
+  - ppc64le
+
 language: go
 go:
   - "1.11.x"
@@ -12,6 +16,11 @@ matrix:
     - go: tip
 
 script:
+  - |
+      if [[ "$TRAVIS_CPU_ARCH" == "ppc64le" ]]; then
+        wget -O /tmp/golangci-lint 'https://github.com/golangci/golangci-lint/releases/download/v1.31.0/golangci-lint-1.31.0-linux-ppc64le.deb' &&
+        sudo dpkg -i /tmp/golangci-lint
+      fi
   - if [ "${TRAVIS_GO_VERSION}" = "stable" ]; then make check-mod; fi
   - if [ "${TRAVIS_GO_VERSION}" = "stable" ]; then make golangci-lint; fi
   - if [ "${TRAVIS_GO_VERSION}" = "stable" ]; then echo running check scripts; make check; fi
