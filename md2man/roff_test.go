@@ -10,6 +10,34 @@ type TestParams struct {
 	extensions blackfriday.Extensions
 }
 
+func TestFirstHeading(t *testing.T) {
+	var tests = []string{
+		`DOCKER 1 "JUNE 2014" "Docker Community" "Docker User Manuals"
+====
+`,
+		`.nh
+.TH DOCKER 1 "JUNE 2014" "Docker Community" "Docker User Manuals"`,
+
+		`#   DOCKER(1) "JUNE 2014" "Docker Community" "Docker User Manuals"`,
+		`.nh
+.TH "DOCKER" "1" "JUNE 2014" "Docker Community" "Docker User Manuals"`,
+
+		`# "DOCKER(1)" "JUNE 2014" "Docker Community" "Docker User Manuals"`,
+		`.nh
+.TH "DOCKER" "1" "JUNE 2014" "Docker Community" "Docker User Manuals"`,
+
+		`% DOCKER(1) Docker User Manuals
+% Docker Community
+% JUNE 2014
+`,
+		`.nh
+.TH "DOCKER" "1" Docker User Manuals
+Docker Community
+JUNE 2014`,
+	}
+	doTestsParam(t, tests, TestParams{})
+}
+
 func TestEmphasis(t *testing.T) {
 	var tests = []string{
 		"nothing inline\n",
@@ -305,8 +333,12 @@ func execRecoverableTestSuite(t *testing.T, tests []string, params TestParams, s
 
 func runMarkdown(input string, params TestParams) string {
 	renderer := NewRoffRenderer()
+	extensions := params.extensions
+	if extensions == 0 {
+		extensions = renderer.extensions
+	}
 	return string(blackfriday.Run([]byte(input), blackfriday.WithRenderer(renderer),
-		blackfriday.WithExtensions(params.extensions)))
+		blackfriday.WithExtensions(extensions)))
 }
 
 func doTestsParam(t *testing.T, tests []string, params TestParams) {

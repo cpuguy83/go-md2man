@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"regexp"
 	"strings"
 
 	"github.com/russross/blackfriday/v2"
@@ -163,12 +164,16 @@ func (r *roffRenderer) RenderNode(w io.Writer, node *blackfriday.Node, entering 
 	return walkAction
 }
 
+var title = regexp.MustCompile(`^\s*"?(\w+)\((\d)\)"?`)
+
 func (r *roffRenderer) handleText(w io.Writer, node *blackfriday.Node, entering bool) {
 	var (
 		start, end string
+		literal    = node.Literal
 	)
 	// handle special roff table cell text encapsulation
-	if node.Parent.Type == blackfriday.TableCell {
+	switch node.Parent.Type {
+	case blackfriday.TableCell:
 		if len(node.Literal) > 30 {
 			start = tableCellStart
 			end = tableCellEnd
@@ -178,9 +183,14 @@ func (r *roffRenderer) handleText(w io.Writer, node *blackfriday.Node, entering 
 				end = crTag
 			}
 		}
+	case blackfriday.Heading:
+		if r.firstHeader && title.Match(literal) {
+			// COMMAND(1) SOMETHING => "COMMAND" "1" SOMETHING"
+			literal = title.ReplaceAll(literal, []byte("\"${1}\" \"${2}\""))
+		}
 	}
 	out(w, start)
-	escapeSpecialChars(w, node.Literal)
+	escapeSpecialChars(w, literal)
 	out(w, end)
 }
 
