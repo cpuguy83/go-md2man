@@ -1,6 +1,7 @@
 package md2man
 
 import (
+	"bytes"
 	"fmt"
 	"io"
 	"os"
@@ -164,7 +165,7 @@ func (r *roffRenderer) RenderNode(w io.Writer, node *blackfriday.Node, entering 
 	return walkAction
 }
 
-var title = regexp.MustCompile(`^\s*"?(\w+)\((\d)\)"?`)
+var title = regexp.MustCompile(`^\s*"?(\w+)\((\d)\)"?\s*`)
 
 func (r *roffRenderer) handleText(w io.Writer, node *blackfriday.Node, entering bool) {
 	var (
@@ -184,9 +185,23 @@ func (r *roffRenderer) handleText(w io.Writer, node *blackfriday.Node, entering 
 			}
 		}
 	case blackfriday.Heading:
-		if r.firstHeader && title.Match(literal) {
-			// COMMAND(1) SOMETHING => "COMMAND" "1" SOMETHING"
-			literal = title.ReplaceAll(literal, []byte("\"${1}\" \"${2}\""))
+		if r.firstHeader {
+			if title.Match(literal) {
+				// COMMAND(1) SOMETHING\nSOMETHING 2\nSOMETHING 3 => "COMMAND" "1"\nSOMETHING\nSOMETHING 2\nSOMETHING 3
+				literal = title.ReplaceAll(literal, []byte("\"${1}\" \"${2}\"\n"))
+			}
+
+			// BlackFriday preserves newlines in the pandoc header. We already quoted
+			// the command itself. If there's remaining lines, quote and append each.
+			parts := bytes.Split(literal, []byte("\n"))
+			literal = parts[0]
+			if len(parts) > 1 {
+				for _, line := range parts[1:] {
+					literal = append(literal, []byte(` "`)...)
+					literal = append(literal, bytes.Trim(line, `" `)...)
+					literal = append(literal, []byte(`"`)...)
+				}
+			}
 		}
 	}
 	out(w, start)

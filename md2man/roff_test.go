@@ -31,9 +31,44 @@ func TestFirstHeading(t *testing.T) {
 % JUNE 2014
 `,
 		`.nh
-.TH "DOCKER" "1" Docker User Manuals
-Docker Community
-JUNE 2014`,
+.TH "DOCKER" "1" "Docker User Manuals" "Docker Community" "JUNE 2014"`,
+
+		`% DOCKER(1) "Docker User Manuals"
+% "Docker Community"
+% "JUNE 2014"
+`,
+		`.nh
+.TH "DOCKER" "1" "Docker User Manuals" "Docker Community" "JUNE 2014"`,
+
+		`% DOCKER(1)
+% JUNE 2014
+`,
+		`.nh
+.TH "DOCKER" "1" "JUNE 2014"`,
+
+		`% DOCKER 1
+% JUNE 2014
+`,
+		`.nh
+.TH DOCKER 1 "JUNE 2014"`,
+
+		`# DOCKER(1) JUNE 2014
+
+Here's a paragraph, following the first header.
+
+# SEE ALSO
+**docker-run(1)**
+`,
+		`.nh
+.TH "DOCKER" "1" "JUNE 2014"
+.PP
+Here's a paragraph, following the first header.
+
+
+.SH SEE ALSO
+.PP
+\fBdocker\-run(1)\fP
+`,
 	}
 	doTestsParam(t, tests, TestParams{})
 }
