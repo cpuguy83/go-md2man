@@ -259,7 +259,7 @@ func (r *roffRenderer) handleItem(w io.Writer, node *blackfriday.Node, entering 
 func (r *roffRenderer) handleTable(w io.Writer, node *blackfriday.Node, entering bool) {
 	if entering {
 		out(w, tableStart)
-		//call walker to count cells (and rows?) so format section can be produced
+		// call walker to count cells (and rows?) so format section can be produced
 		columns := countColumns(node)
 		out(w, strings.Repeat("l ", columns)+"\n")
 		out(w, strings.Repeat("l ", columns)+".\n")
@@ -283,9 +283,17 @@ func (r *roffRenderer) handleTableCell(w io.Writer, node *blackfriday.Node, ente
 			out(w, start)
 		}
 	} else {
-		// need to carriage return if we are at the end of the header row
-		if node.IsHeader && node.Next == nil {
-			end = end + crTag
+		if node.Next == nil {
+			if node.IsHeader {
+				// need to carriage return if we are at the end of the header row
+				end = end + crTag
+			} else if node.FirstChild == nil {
+				// empty cell: need to carriage return if we are at the end of
+				// the table, because handleText() will not be called if there's
+				// no text to preocess (which would otherwise add the trailing
+				// carriage return)
+				end = crTag
+			}
 		}
 		out(w, end)
 	}

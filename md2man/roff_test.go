@@ -272,6 +272,29 @@ robin	red.
 	doTestsInlineParam(t, tests, TestParams{blackfriday.Tables})
 }
 
+func TestTableWithEmptyCell(t *testing.T) {
+	var tests = []string{
+		`
+| Col1     | Col2  | Col3 |
+|:---------|:-----:|:----:| 
+| row one  |       |      | 
+| row two  | x     |      |
+`,
+		`.nh
+
+.TS
+allbox;
+l l l 
+l l l .
+\fB\fCCol1\fR	\fB\fCCol2\fR	\fB\fCCol3\fR
+row one		
+row two	x	
+.TE
+`,
+	}
+	doTestsInlineParam(t, tests, TestParams{blackfriday.Tables})
+}
+
 func TestLinks(t *testing.T) {
 	var tests = []string{
 		"See [docs](https://docs.docker.com/) for\nmore",
