@@ -177,7 +177,7 @@ func (r *roffRenderer) handleText(w io.Writer, node *blackfriday.Node, entering 
 			end = tableCellEnd
 		} else {
 			// end rows that aren't terminated by "tableCellEnd" with a cr if end of row
-			if node.Parent.Next == nil && !node.Parent.IsHeader {
+			if node.Parent.Next == nil && node.Next == nil && !node.Parent.IsHeader {
 				end = crTag
 			}
 		}

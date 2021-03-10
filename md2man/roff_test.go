@@ -295,6 +295,39 @@ row two	x
 	doTestsInlineParam(t, tests, TestParams{blackfriday.Tables})
 }
 
+func TestTableWrapping(t *testing.T) {
+	var tests = []string{
+		`
+| Col1        | Col2                                      |
+| ----------- | ----------------------------------------- |
+| row one     | This is a short line.                     |
+| row\|two    | Col1 should not wrap.                     |
+| row three   | no\|wrap                                  |
+| row four    | Inline _cursive_ should not wrap.         |
+| row five    | Inline ` + "`code`" + ` should not wrap.  |
+| row six     | Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent eu ipsum eget tortor aliquam accumsan. Quisque ac turpis convallis, sagittis urna ac, tempor est. Mauris nibh arcu, hendrerit id eros sed, sodales lacinia ex. Suspendisse sed condimentum urna, vitae mattis lectus. Mauris imperdiet magna vel purus pretium, id interdum libero. |
+`,
+		`.nh
+
+.TS
+allbox;
+l l 
+l l .
+\fB\fCCol1\fR	\fB\fCCol2\fR
+row one	This is a short line.
+row|two	Col1 should not wrap.
+row three	no|wrap
+row four	Inline \fIcursive\fP should not wrap.
+row five	Inline \fB\fCcode\fR should not wrap.
+row six	T{
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent eu ipsum eget tortor aliquam accumsan. Quisque ac turpis convallis, sagittis urna ac, tempor est. Mauris nibh arcu, hendrerit id eros sed, sodales lacinia ex. Suspendisse sed condimentum urna, vitae mattis lectus. Mauris imperdiet magna vel purus pretium, id interdum libero.
+T}
+.TE
+`,
+	}
+	doTestsInlineParam(t, tests, TestParams{blackfriday.Tables})
+}
+
 func TestLinks(t *testing.T) {
 	var tests = []string{
 		"See [docs](https://docs.docker.com/) for\nmore",
