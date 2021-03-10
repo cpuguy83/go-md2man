@@ -45,7 +45,7 @@ const (
 	dtTag            = "\n.TP\n"
 	dd2Tag           = "\n"
 	tableStart       = "\n.TS\nallbox;\n"
-	tableEnd         = "\n.TE\n"
+	tableEnd         = ".TE\n"
 	tableCellStart   = "T{\n"
 	tableCellEnd     = "\nT}\n"
 )
