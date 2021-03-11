@@ -298,14 +298,15 @@ row two	x
 func TestTableWrapping(t *testing.T) {
 	var tests = []string{
 		`
-| Col1        | Col2                                      |
-| ----------- | ----------------------------------------- |
-| row one     | This is a short line.                     |
-| row\|two    | Col1 should not wrap.                     |
-| row three   | no\|wrap                                  |
-| row four    | Inline _cursive_ should not wrap.         |
-| row five    | Inline ` + "`code`" + ` should not wrap.  |
-| row six     | Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent eu ipsum eget tortor aliquam accumsan. Quisque ac turpis convallis, sagittis urna ac, tempor est. Mauris nibh arcu, hendrerit id eros sed, sodales lacinia ex. Suspendisse sed condimentum urna, vitae mattis lectus. Mauris imperdiet magna vel purus pretium, id interdum libero. |
+| Col1        | Col2                                             |
+| ----------- | ------------------------------------------------ |
+| row one     | This is a short line.                            |
+| row\|two    | Col1 should not wrap.                            |
+| row three   | no\|wrap                                         |
+| row four    | Inline _cursive_ should not wrap.                |
+| row five    | Inline ` + "`code markup`" + ` should not wrap.  |
+| row six     | A line that's longer than 30 characters with inline ` + "`code markup`" + ` or _cursive_ should not wrap.  |
+| row seven   | Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent eu ipsum eget tortor aliquam accumsan. Quisque ac turpis convallis, sagittis urna ac, tempor est. Mauris nibh arcu, hendrerit id eros sed, sodales lacinia ex. Suspendisse sed condimentum urna, vitae mattis lectus. Mauris imperdiet magna vel purus pretium, id interdum libero. |
 `,
 		`.nh
 
@@ -318,8 +319,11 @@ row one	This is a short line.
 row|two	Col1 should not wrap.
 row three	no|wrap
 row four	Inline \fIcursive\fP should not wrap.
-row five	Inline \fB\fCcode\fR should not wrap.
+row five	Inline \fB\fCcode markup\fR should not wrap.
 row six	T{
+A line that's longer than 30 characters with inline \fB\fCcode markup\fR or \fIcursive\fP should not wrap.
+T}
+row seven	T{
 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent eu ipsum eget tortor aliquam accumsan. Quisque ac turpis convallis, sagittis urna ac, tempor est. Mauris nibh arcu, hendrerit id eros sed, sodales lacinia ex. Suspendisse sed condimentum urna, vitae mattis lectus. Mauris imperdiet magna vel purus pretium, id interdum libero.
 T}
 .TE
