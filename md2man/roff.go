@@ -309,15 +309,6 @@ func out(w io.Writer, output string) {
 	io.WriteString(w, output) // nolint: errcheck
 }
 
-func needsBackslash(c byte) bool {
-	for _, r := range []byte("-_&\\") {
-		if c == r {
-			return true
-		}
-	}
-	return false
-}
-
 func escapeSpecialChars(w io.Writer, text []byte) {
 	for i := 0; i < len(text); i++ {
 		// escape initial apostrophe or period
@@ -328,7 +319,7 @@ func escapeSpecialChars(w io.Writer, text []byte) {
 		// directly copy normal characters
 		org := i
 
-		for i < len(text) && !needsBackslash(text[i]) {
+		for i < len(text) && text[i] != '\\' {
 			i++
 		}
 		if i > org {

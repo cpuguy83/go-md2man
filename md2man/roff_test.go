@@ -52,13 +52,13 @@ func TestEmphasis(t *testing.T) {
 		".nh\n\n.PP\nover \\fItwo\nlines\\fP test\n",
 
 		"odd _number of_ markers_ here\n",
-		".nh\n\n.PP\nodd \\fInumber of\\fP markers\\_ here\n",
+		".nh\n\n.PP\nodd \\fInumber of\\fP markers_ here\n",
 
 		"odd _number\nof_ markers_ here\n",
-		".nh\n\n.PP\nodd \\fInumber\nof\\fP markers\\_ here\n",
+		".nh\n\n.PP\nodd \\fInumber\nof\\fP markers_ here\n",
 
 		"mix of *markers_\n",
-		".nh\n\n.PP\nmix of *markers\\_\n",
+		".nh\n\n.PP\nmix of *markers_\n",
 
 		"*What is A\\* algorithm?*\n",
 		".nh\n\n.PP\n\\fIWhat is A* algorithm?\\fP\n",
@@ -108,13 +108,13 @@ func TestStrong(t *testing.T) {
 		".nh\n\n.PP\nover \\fBtwo\nlines\\fP test\n",
 
 		"odd __number of__ markers__ here\n",
-		".nh\n\n.PP\nodd \\fBnumber of\\fP markers\\_\\_ here\n",
+		".nh\n\n.PP\nodd \\fBnumber of\\fP markers__ here\n",
 
 		"odd __number\nof__ markers__ here\n",
-		".nh\n\n.PP\nodd \\fBnumber\nof\\fP markers\\_\\_ here\n",
+		".nh\n\n.PP\nodd \\fBnumber\nof\\fP markers__ here\n",
 
 		"mix of **markers__\n",
-		".nh\n\n.PP\nmix of **markers\\_\\_\n",
+		".nh\n\n.PP\nmix of **markers__\n",
 
 		"**`/usr`** : this folder is named `usr`\n",
 		".nh\n\n.PP\n\\fB\\fB\\fC/usr\\fR\\fP : this folder is named \\fB\\fCusr\\fR\n",
@@ -137,7 +137,7 @@ func TestEmphasisMix(t *testing.T) {
 		".nh\n\n.PP\n\\fB\\fItriple emphasis\\fP\\fP\n",
 
 		"***triple emphasis___\n",
-		".nh\n\n.PP\n***triple emphasis\\_\\_\\_\n",
+		".nh\n\n.PP\n***triple emphasis___\n",
 
 		"*__triple emphasis__*\n",
 		".nh\n\n.PP\n\\fI\\fBtriple emphasis\\fP\\fP\n",
@@ -169,7 +169,7 @@ func TestCodeSpan(t *testing.T) {
 		".nh\n\n.PP\na `single marker\n",
 
 		"a single multi-tick marker with ``` no text\n",
-		".nh\n\n.PP\na single multi\\-tick marker with ``` no text\n",
+		".nh\n\n.PP\na single multi-tick marker with ``` no text\n",
 
 		"markers with ` ` a space\n",
 		".nh\n\n.PP\nmarkers with  a space\n",
@@ -178,7 +178,7 @@ func TestCodeSpan(t *testing.T) {
 		".nh\n\n.PP\n\\fB\\fCsource code\\fR and a `stray\n",
 
 		"`source *with* _awkward characters_ in it`\n",
-		".nh\n\n.PP\n\\fB\\fCsource *with* \\_awkward characters\\_ in it\\fR\n",
+		".nh\n\n.PP\n\\fB\\fCsource *with* _awkward characters_ in it\\fR\n",
 
 		"`split over\ntwo lines`\n",
 		".nh\n\n.PP\n\\fB\\fCsplit over\ntwo lines\\fR\n",
@@ -343,7 +343,7 @@ func TestLinks(t *testing.T) {
 func TestEscapeCharacters(t *testing.T) {
 	var tests = []string{
 		"Test-one_two&three\\four~five",
-		".nh\n\n.PP\nTest\\-one\\_two\\&three\\\\four~five\n",
+		".nh\n\n.PP\nTest-one_two&three\\\\four~five\n",
 	}
 	doTestsInline(t, tests)
 }
