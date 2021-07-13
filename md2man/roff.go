@@ -158,6 +158,8 @@ func (r *roffRenderer) RenderNode(w io.Writer, node *blackfriday.Node, entering 
 	case blackfriday.TableRow:
 		// no action as cell entries do all the nroff formatting
 		return blackfriday.GoToNext
+	case blackfriday.HTMLSpan:
+		// ignore other HTML tags
 	default:
 		fmt.Fprintln(os.Stderr, "WARNING: go-md2man does not handle node type "+node.Type.String())
 	}

@@ -289,6 +289,40 @@ func TestEscapeCharacters(t *testing.T) {
 	doTestsInline(t, tests)
 }
 
+func TestSpan(t *testing.T) {
+	var tests = []string{
+		"Text containing a <span>html span</span> element\n",
+		".nh\n\n.PP\nText containing a html span element\n",
+
+		`Text containing an inline <svg width="200" height="200" xmlns="http://www.w3.org/2000/svg"><image href="https://mdn.mozillademos.org/files/6457/mdn_logo_only_color.png" height="200" width="200"/></svg>SVG image`,
+		".nh\n\n.PP\nText containing an inline SVG image\n",
+
+		"Text containing a <span id=\"e-123\" class=\"foo\">html span</span> element\n",
+		".nh\n\n.PP\nText containing a html span element\n",
+	}
+	doTestsInline(t, tests)
+}
+
+func TestEmails(t *testing.T) {
+	var tests = []string{
+		`April 2014, Originally compiled by William Henry (whenry at redhat dot com)
+based on docker.com source material and internal work.
+June 2014, updated by Sven Dowideit <SvenDowideit@home.org.au>
+July 2014, updated by Sven Dowideit (SvenDowideit@home.org.au)
+`,
+		`.nh
+
+.PP
+April 2014, Originally compiled by William Henry (whenry at redhat dot com)
+based on docker.com source material and internal work.
+June 2014, updated by Sven Dowideit SvenDowideit@home.org.au
+\[la]mailto:SvenDowideit@home.org.au\[ra]
+July 2014, updated by Sven Dowideit (SvenDowideit@home.org.au)
+`,
+	}
+	doTestsInline(t, tests)
+}
+
 func execRecoverableTestSuite(t *testing.T, tests []string, params TestParams, suite func(candidate *string)) {
 	// Catch and report panics. This is useful when running 'go test -v' on
 	// the integration server. When developing, though, crash dump is often
