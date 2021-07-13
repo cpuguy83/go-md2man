@@ -15,7 +15,7 @@ type roffRenderer struct {
 	extensions   blackfriday.Extensions
 	listCounters []int
 	firstHeader  bool
-	defineTerm   bool
+	firstDD      bool
 	listDepth    int
 }
 
@@ -42,7 +42,8 @@ const (
 	quoteCloseTag    = "\n.RE\n"
 	listTag          = "\n.RS\n"
 	listCloseTag     = "\n.RE\n"
-	arglistTag       = "\n.TP\n"
+	dtTag            = "\n.TP\n"
+	dd2Tag           = "\n"
 	tableStart       = "\n.TS\nallbox;\n"
 	tableEnd         = "\n.TE\n"
 	tableCellStart   = "T{\n"
@@ -230,15 +231,20 @@ func (r *roffRenderer) handleItem(w io.Writer, node *blackfriday.Node, entering 
 		if node.ListFlags&blackfriday.ListTypeOrdered != 0 {
 			out(w, fmt.Sprintf(".IP \"%3d.\" 5\n", r.listCounters[len(r.listCounters)-1]))
 			r.listCounters[len(r.listCounters)-1]++
+		} else if node.ListFlags&blackfriday.ListTypeTerm != 0 {
+			// DT (definition term): line just before DD (see below).
+			out(w, dtTag)
+			r.firstDD = true
 		} else if node.ListFlags&blackfriday.ListTypeDefinition != 0 {
-			// state machine for handling terms and following definitions
-			// since blackfriday does not distinguish them properly, nor
-			// does it seperate them into separate lists as it should
-			if !r.defineTerm {
-				out(w, arglistTag)
-				r.defineTerm = true
+			// DD (definition description): line that starts with ": ".
+			//
+			// We have to distinguish between the first DD and the
+			// subsequent ones, as there should be no vertical
+			// whitespace between the DT and the first DD.
+			if r.firstDD {
+				r.firstDD = false
 			} else {
-				r.defineTerm = false
+				out(w, dd2Tag)
 			}
 		} else {
 			out(w, ".IP \\(bu 2\n")
