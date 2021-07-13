@@ -12,12 +12,12 @@ jobs:
     name: Build
     strategy:
       matrix:
-        go-versions: [1.12.x, 1.13.x, 1.14.x]
-        platform: [ubuntu-latest]
+        go-versions: [1.13.x, 1.15.x, 1.16.x]
+        platform: [ubuntu-20.04]
     runs-on: ${{ matrix.platform }}
     steps:
     - name: Install Go
-      uses: actions/setup-go@v1
+      uses: actions/setup-go@v2
       with:
         go-version: ${{ matrix.go-version }}
 
@@ -29,3 +29,12 @@ jobs:
 
     - name: Test
       run: go test -v ./...
+
+  lint:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+      - uses: golangci/golangci-lint-action@v2
+        with:
+          # must be specified without patch version
+          version: v1.41
