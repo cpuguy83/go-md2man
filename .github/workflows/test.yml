@@ -29,3 +29,12 @@ jobs:
 
     - name: Test
       run: go test -v ./...
+
+  lint:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+      - uses: golangci/golangci-lint-action@v2
+        with:
+          # must be specified without patch version
+          version: v1.41
