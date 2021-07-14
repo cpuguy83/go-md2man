@@ -382,6 +382,15 @@ July 2014, updated by Sven Dowideit (SvenDowideit@home.org.au)
 	doTestsInline(t, tests)
 }
 
+func TestNameSection(t *testing.T) {
+	// Because there is special handling for the first header, we addan extra header at the beginning before the name section.
+	tests := []string{
+		"# Some text\n# NAME\nfoo-bar - test foo bar baz\n",
+		".nh\n.TH Some text\n\n.SH NAME\n.PP\nfoo-bar \\- test foo bar baz\n",
+	}
+	doTestsInline(t, tests)
+}
+
 func execRecoverableTestSuite(t *testing.T, tests []string, params TestParams, suite func(candidate *string)) {
 	// Catch and report panics. This is useful when running 'go test -v' on
 	// the integration server. When developing, though, crash dump is often

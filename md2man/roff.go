@@ -1,6 +1,7 @@
 package md2man
 
 import (
+	"bytes"
 	"fmt"
 	"io"
 	"os"
@@ -17,6 +18,11 @@ type roffRenderer struct {
 	firstHeader  bool
 	firstDD      bool
 	listDepth    int
+
+	// The names section is denoted by a `NAME` header followed buy a newline with CSV listing (no spaces) of the names.
+	// These variables let us know when we are in the section and when it has been processed.
+	inNamesSection   bool
+	namesSectionDone bool
 }
 
 const (
@@ -48,6 +54,10 @@ const (
 	tableEnd         = ".TE\n"
 	tableCellStart   = "T{\n"
 	tableCellEnd     = "\nT}\n"
+)
+
+var (
+	nameSectionHeader = []byte("NAME")
 )
 
 // NewRoffRenderer creates a new blackfriday Renderer for generating roff documents
@@ -86,12 +96,11 @@ func (r *roffRenderer) RenderFooter(w io.Writer, ast *blackfriday.Node) {
 // RenderNode is called for each node in a markdown document; based on the node
 // type the equivalent roff output is sent to the writer
 func (r *roffRenderer) RenderNode(w io.Writer, node *blackfriday.Node, entering bool) blackfriday.WalkStatus {
-
 	var walkAction = blackfriday.GoToNext
 
 	switch node.Type {
 	case blackfriday.Text:
-		escapeSpecialChars(w, node.Literal)
+		r.handleText(w, node)
 	case blackfriday.Softbreak:
 		out(w, crTag)
 	case blackfriday.Hardbreak:
@@ -166,21 +175,53 @@ func (r *roffRenderer) RenderNode(w io.Writer, node *blackfriday.Node, entering 
 	return walkAction
 }
 
-func (r *roffRenderer) handleHeading(w io.Writer, node *blackfriday.Node, entering bool) {
-	if entering {
-		switch node.Level {
-		case 1:
-			if !r.firstHeader {
-				out(w, titleHeader)
-				r.firstHeader = true
-				break
-			}
-			out(w, topLevelHeader)
-		case 2:
-			out(w, secondLevelHdr)
-		default:
-			out(w, otherHeader)
+// manpages have this special section for `NAME`
+// In markdown this will look like this (tabs added for readability):
+//
+// 	# NAME
+// 	<name> - <description>
+//
+// So we have a heading with a value of `NAME` followed by some text
+// Where <name> is the command or list of commands with comma separated values.
+// The command names must not contain spaces.
+// The `-` before the description must be escaped with `\`.
+func (r *roffRenderer) handleText(w io.Writer, node *blackfriday.Node) {
+	if r.inNamesSection && !r.namesSectionDone && node.Parent.Type != blackfriday.Heading {
+		if idx := bytes.Index(node.Literal, []byte(" - ")); idx > 0 {
+			escapeSpecialChars(w, node.Literal[:idx])
+			out(w, ` \- `)
+			escapeSpecialChars(w, node.Literal[idx+3:])
 		}
+		r.namesSectionDone = true
+		return
+	}
+
+	escapeSpecialChars(w, node.Literal)
+}
+
+func (r *roffRenderer) handleHeading(w io.Writer, node *blackfriday.Node, entering bool) {
+	if !entering {
+		return
+	}
+
+	if !r.inNamesSection && node.FirstChild != nil {
+		if bytes.Equal(node.FirstChild.Literal, nameSectionHeader) {
+			r.inNamesSection = true
+		}
+	}
+
+	switch node.Level {
+	case 1:
+		if !r.firstHeader {
+			out(w, titleHeader)
+			r.firstHeader = true
+			break
+		}
+		out(w, topLevelHeader)
+	case 2:
+		out(w, secondLevelHdr)
+	default:
+		out(w, otherHeader)
 	}
 }
 
