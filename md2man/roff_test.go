@@ -382,12 +382,66 @@ July 2014, updated by Sven Dowideit (SvenDowideit@home.org.au)
 	doTestsInline(t, tests)
 }
 
+func TestHeader(t *testing.T) {
+	tests := []string{
+		"# Some text\n# Another Section\n\nA paragraph",
+		".nh\n.TH Some text\n\n.SH Another Section\nA paragraph\n",
+	}
+	doTestsInline(t, tests)
+}
+
 func TestNameSection(t *testing.T) {
 	// Because there is special handling for the first header, we add an extra header at the beginning before the name section.
 	tests := []string{
 		"# Some text\n# NAME\nfoo-bar - test foo bar baz\n",
-		".nh\n.TH Some text\n\n.SH NAME\n.PP\nfoo-bar \\- test foo bar baz\n",
+		".nh\n.TH Some text\n\n.SH NAME\nfoo-bar \\- test foo bar baz\n",
 	}
+	doTestsInline(t, tests)
+}
+
+func TestList(t *testing.T) {
+	testData := `# blaat
+
+## Name
+
+blaat
+
+* aaa
+
+	* b
+	* c
+	* d
+	* e
+
+* bbbb`
+
+	expected := `.nh
+.TH blaat
+.SH Name
+blaat
+
+.RS
+.IP \(bu 2
+aaa
+.RS
+.IP \(bu 2
+b
+.IP \(bu 2
+c
+.IP \(bu 2
+d
+.IP \(bu 2
+e
+
+.RE
+
+.IP \(bu 2
+bbbb
+
+.RE
+`
+
+	tests := []string{testData, expected}
 	doTestsInline(t, tests)
 }
 

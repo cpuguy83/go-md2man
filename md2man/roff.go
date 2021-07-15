@@ -21,8 +21,8 @@ type roffRenderer struct {
 
 	// The names section is denoted by a `NAME` header followed buy a newline with CSV listing (no spaces) of the names.
 	// These variables let us know when we are in the section and when it has been processed.
-	inNamesSection   bool
-	namesSectionDone bool
+	foundNamesSection bool
+	namesSectionDone  bool
 }
 
 const (
@@ -131,15 +131,25 @@ func (r *roffRenderer) RenderNode(w io.Writer, node *blackfriday.Node, entering 
 	case blackfriday.Document:
 		break
 	case blackfriday.Paragraph:
+		// Note that blackfriday inserts paragraph markers at various points
+		// We don't neccessarily want a paragraph for these places.
+
 		// roff .PP markers break lists
 		if r.listDepth > 0 {
 			return blackfriday.GoToNext
 		}
-		if entering {
-			out(w, paraTag)
-		} else {
-			out(w, crTag)
+
+		tag := paraTag
+		nextIsList := (node.Next != nil && node.Next.Type == blackfriday.List)
+		if node.Next != nil {
+			fmt.Fprintln(os.Stderr, entering, node.Prev.Type.String(), node.Next.Type.String())
 		}
+
+		if !entering || nextIsList || (node.Prev != nil && node.Prev.Type == blackfriday.Heading) {
+			tag = crTag
+		}
+
+		out(w, tag)
 	case blackfriday.BlockQuote:
 		if entering {
 			out(w, quoteTag)
@@ -186,7 +196,7 @@ func (r *roffRenderer) RenderNode(w io.Writer, node *blackfriday.Node, entering 
 // The command names must not contain spaces.
 // The `-` before the description must be escaped with `\`.
 func (r *roffRenderer) handleText(w io.Writer, node *blackfriday.Node) {
-	if r.inNamesSection && !r.namesSectionDone && node.Parent.Type != blackfriday.Heading {
+	if r.foundNamesSection && !r.namesSectionDone && node.Parent.Type != blackfriday.Heading {
 		if idx := bytes.Index(node.Literal, []byte(" - ")); idx > 0 {
 			escapeSpecialChars(w, node.Literal[:idx])
 			out(w, ` \- `)
@@ -204,9 +214,9 @@ func (r *roffRenderer) handleHeading(w io.Writer, node *blackfriday.Node, enteri
 		return
 	}
 
-	if !r.inNamesSection && node.FirstChild != nil {
+	if !r.foundNamesSection && node.FirstChild != nil {
 		if bytes.Equal(node.FirstChild.Literal, nameSectionHeader) {
-			r.inNamesSection = true
+			r.foundNamesSection = true
 		}
 	}
 
