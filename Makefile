@@ -1,5 +1,4 @@
 GO111MODULE ?= on
-LINTER_BIN ?= golangci-lint
 
 export GO111MODULE
 
