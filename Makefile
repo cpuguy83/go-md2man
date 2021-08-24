@@ -3,6 +3,36 @@ LINTER_BIN ?= golangci-lint
 
 export GO111MODULE
 
+GOOS ?= $(if $(TARGETOS),$(TARGETOS),)
+GOARCH ?= $(if $(TARGETARCH),$(TARGETARCH),)
+
+ifeq ($(TARGETARCH),amd64)
+GOAMD64 ?= $(TARGETVARIANT)
+endif
+
+ifeq ($(TARGETARCH),arm)
+GOARM ?= $(TARGETVARIANT:v%=%)
+endif
+
+ifneq ($(GOOS),)
+export GOOS
+endif
+
+ifneq ($(GOARCH),)
+export GOARCH
+endif
+
+ifneq ($(GOAMD64),)
+export GOAMD64
+endif
+
+ifneq ($(GOARM),)
+export GOARM
+endif
+
+vars:
+	@go env
+
 .PHONY:
 build: bin/go-md2man
 
@@ -14,12 +44,9 @@ clean:
 test:
 	@go test $(TEST_FLAGS) ./...
 
-bin/go-md2man: actual_build_flags := $(BUILD_FLAGS) -o bin/go-md2man
-bin/go-md2man: bin
-	@CGO_ENABLED=0 go build $(actual_build_flags)
-
-bin:
-	@mkdir ./bin
+bin/go-md2man: go.mod go.sum md2man/* *.go
+	@mkdir -p bin
+	CGO_ENABLED=0 go build $(BUILD_FLAGS) -o $@
 
 .PHONY: mod
 mod:
