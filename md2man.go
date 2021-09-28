@@ -17,7 +17,7 @@ func main() {
 	flag.Parse()
 
 	inFile := os.Stdin
-	if *inFilePath != "" {
+	if *inFilePath != "" && *inFilePath != "-" {
 		inFile, err = os.Open(*inFilePath)
 		if err != nil {
 			fmt.Println(err)
@@ -35,7 +35,7 @@ func main() {
 	out := md2man.Render(doc)
 
 	outFile := os.Stdout
-	if *outFilePath != "" {
+	if *outFilePath != "" && *outFilePath != "-" {
 		outFile, err = os.Create(*outFilePath)
 		if err != nil {
 			fmt.Println(err)
