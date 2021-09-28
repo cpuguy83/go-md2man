@@ -23,8 +23,8 @@ func main() {
 			fmt.Println(err)
 			os.Exit(1)
 		}
+		defer inFile.Close() // nolint: errcheck
 	}
-	defer inFile.Close() // nolint: errcheck
 
 	doc, err := ioutil.ReadAll(inFile)
 	if err != nil {
