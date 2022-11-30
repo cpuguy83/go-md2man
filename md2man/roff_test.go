@@ -336,6 +336,8 @@ func TestLinks(t *testing.T) {
 	var tests = []string{
 		"See [docs](https://docs.docker.com/) for\nmore",
 		".nh\n\n.PP\nSee docs\n\\[la]https://docs.docker.com/\\[ra] for\nmore\n",
+		"See [docs](https://docs-foo.docker.com/) for\nmore",
+		".nh\n\n.PP\nSee docs\n\\[la]https://docs\\-foo.docker.com/\\[ra] for\nmore\n",
 	}
 	doTestsInline(t, tests)
 }

@@ -110,7 +110,9 @@ func (r *roffRenderer) RenderNode(w io.Writer, node *blackfriday.Node, entering 
 		}
 	case blackfriday.Link:
 		if !entering {
-			out(w, linkTag+string(node.LinkData.Destination)+linkCloseTag)
+			// Hyphens in a link must be escaped to avoid word-wrap in the rendered man page.
+			escapedLink := strings.ReplaceAll(string(node.LinkData.Destination), "-", "\\-")
+			out(w, linkTag+escapedLink+linkCloseTag)
 		}
 	case blackfriday.Image:
 		// ignore images
