@@ -1,6 +1,7 @@
 package md2man
 
 import (
+	"bytes"
 	"fmt"
 	"io"
 	"os"
@@ -109,9 +110,16 @@ func (r *roffRenderer) RenderNode(w io.Writer, node *blackfriday.Node, entering 
 			out(w, strongCloseTag)
 		}
 	case blackfriday.Link:
-		if !entering {
-			out(w, linkTag+string(node.LinkData.Destination)+linkCloseTag)
+		// Don't render the link text for automatic links, because this
+		// will only duplicate the URL in the roff output.
+		// See https://daringfireball.net/projects/markdown/syntax#autolink
+		if !bytes.Equal(node.LinkData.Destination, node.FirstChild.Literal) {
+			out(w, string(node.FirstChild.Literal))
 		}
+		// Hyphens in a link must be escaped to avoid word-wrap in the rendered man page.
+		escapedLink := strings.ReplaceAll(string(node.LinkData.Destination), "-", "\\-")
+		out(w, linkTag+escapedLink+linkCloseTag)
+		walkAction = blackfriday.SkipChildren
 	case blackfriday.Image:
 		// ignore images
 		walkAction = blackfriday.SkipChildren
