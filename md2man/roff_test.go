@@ -11,7 +11,7 @@ type TestParams struct {
 }
 
 func TestEmphasis(t *testing.T) {
-	var tests = []string{
+	tests := []string{
 		"nothing inline\n",
 		".nh\n\n.PP\nnothing inline\n",
 
@@ -67,7 +67,7 @@ func TestEmphasis(t *testing.T) {
 }
 
 func TestStrong(t *testing.T) {
-	var tests = []string{
+	tests := []string{
 		"nothing inline\n",
 		".nh\n\n.PP\nnothing inline\n",
 
@@ -126,7 +126,7 @@ func TestStrong(t *testing.T) {
 }
 
 func TestEmphasisMix(t *testing.T) {
-	var tests = []string{
+	tests := []string{
 		"***triple emphasis***\n",
 		".nh\n\n.PP\n\\fB\\fItriple emphasis\\fP\\fP\n",
 
@@ -155,7 +155,7 @@ func TestEmphasisMix(t *testing.T) {
 }
 
 func TestCodeSpan(t *testing.T) {
-	var tests = []string{
+	tests := []string{
 		"`source code`\n",
 		".nh\n\n.PP\n\\fB\\fCsource code\\fR\n",
 
@@ -193,7 +193,7 @@ func TestCodeSpan(t *testing.T) {
 }
 
 func TestListLists(t *testing.T) {
-	var tests = []string{
+	tests := []string{
 		"\n\n**[grpc]**\n: Section for gRPC socket listener settings. Contains three properties:\n - **address** (Default: \"/run/containerd/containerd.sock\")\n - **uid** (Default: 0)\n - **gid** (Default: 0)",
 		".nh\n\n.TP\n\\fB[grpc]\\fP\nSection for gRPC socket listener settings. Contains three properties:\n.RS\n.IP \\(bu 2\n\\fBaddress\\fP (Default: \"/run/containerd/containerd.sock\")\n.IP \\(bu 2\n\\fBuid\\fP (Default: 0)\n.IP \\(bu 2\n\\fBgid\\fP (Default: 0)\n\n.RE\n\n",
 		"Definition title\n: Definition description one\n: And two\n: And three\n",
@@ -203,7 +203,7 @@ func TestListLists(t *testing.T) {
 }
 
 func TestLineBreak(t *testing.T) {
-	var tests = []string{
+	tests := []string{
 		"this line  \nhas a break\n",
 		".nh\n\n.PP\nthis line\n.br\nhas a break\n",
 
@@ -238,11 +238,12 @@ func TestLineBreak(t *testing.T) {
 		".nh\n\n.PP\nthis has an\n.br\nextra space\n",
 	}
 	doTestsInlineParam(t, tests, TestParams{
-		extensions: blackfriday.BackslashLineBreak})
+		extensions: blackfriday.BackslashLineBreak,
+	})
 }
 
 func TestTable(t *testing.T) {
-	var tests = []string{
+	tests := []string{
 		`
 | Animal               | Color         |
 | --------------| --- |
@@ -273,7 +274,7 @@ robin	red.
 }
 
 func TestTableWithEmptyCell(t *testing.T) {
-	var tests = []string{
+	tests := []string{
 		`
 | Col1     | Col2  | Col3 |
 |:---------|:-----:|:----:| 
@@ -296,7 +297,7 @@ row two	x
 }
 
 func TestTableWrapping(t *testing.T) {
-	var tests = []string{
+	tests := []string{
 		`
 | Col1        | Col2                                             |
 | ----------- | ------------------------------------------------ |
@@ -333,7 +334,7 @@ T}
 }
 
 func TestLinks(t *testing.T) {
-	var tests = []string{
+	tests := []string{
 		"See [docs](https://docs.docker.com/) for\nmore",
 		".nh\n\n.PP\nSee docs\n\\[la]https://docs.docker.com/\\[ra] for\nmore\n",
 		"See [docs](https://docs-foo.docker.com/) for\nmore",
@@ -345,7 +346,7 @@ func TestLinks(t *testing.T) {
 }
 
 func TestEscapeCharacters(t *testing.T) {
-	var tests = []string{
+	tests := []string{
 		"Test-one_two&three\\four~five",
 		".nh\n\n.PP\nTest-one_two&three\\\\four~five\n",
 	}
@@ -353,7 +354,7 @@ func TestEscapeCharacters(t *testing.T) {
 }
 
 func TestSpan(t *testing.T) {
-	var tests = []string{
+	tests := []string{
 		"Text containing a <span>html span</span> element\n",
 		".nh\n\n.PP\nText containing a html span element\n",
 
@@ -367,7 +368,7 @@ func TestSpan(t *testing.T) {
 }
 
 func TestEmails(t *testing.T) {
-	var tests = []string{
+	tests := []string{
 		`April 2014, Originally compiled by William Henry (whenry at redhat dot com)
 based on docker.com source material and internal work.
 June 2014, updated by Sven Dowideit <SvenDowideit@home.org.au>

@@ -87,8 +87,7 @@ func (r *roffRenderer) RenderFooter(w io.Writer, ast *blackfriday.Node) {
 // RenderNode is called for each node in a markdown document; based on the node
 // type the equivalent roff output is sent to the writer
 func (r *roffRenderer) RenderNode(w io.Writer, node *blackfriday.Node, entering bool) blackfriday.WalkStatus {
-
-	var walkAction = blackfriday.GoToNext
+	walkAction := blackfriday.GoToNext
 
 	switch node.Type {
 	case blackfriday.Text:
