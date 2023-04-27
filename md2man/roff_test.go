@@ -258,7 +258,7 @@ func TestTable(t *testing.T) {
 allbox;
 l l 
 l l .
-\fB\fCAnimal\fR	\fB\fCColor\fR
+\fBAnimal\fP	\fBColor\fP
 elephant	T{
 Gray. The elephant is very gray.
 T}
@@ -287,7 +287,7 @@ func TestTableWithEmptyCell(t *testing.T) {
 allbox;
 l l l 
 l l l .
-\fB\fCCol1\fR	\fB\fCCol2\fR	\fB\fCCol3\fR
+\fBCol1\fP	\fBCol2\fP	\fBCol3\fP
 row one		
 row two	x	
 .TE
@@ -315,7 +315,7 @@ func TestTableWrapping(t *testing.T) {
 allbox;
 l l 
 l l .
-\fB\fCCol1\fR	\fB\fCCol2\fR
+\fBCol1\fP	\fBCol2\fP
 row one	This is a short line.
 row|two	Col1 should not wrap.
 row three	no|wrap

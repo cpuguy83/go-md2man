@@ -261,7 +261,7 @@ func (r *roffRenderer) handleTableCell(w io.Writer, node *blackfriday.Node, ente
 			start = "\t"
 		}
 		if node.IsHeader {
-			start += codespanTag
+			start += strongTag
 		} else if nodeLiteralSize(node) > 30 {
 			start += tableCellStart
 		}
@@ -269,7 +269,7 @@ func (r *roffRenderer) handleTableCell(w io.Writer, node *blackfriday.Node, ente
 	} else {
 		var end string
 		if node.IsHeader {
-			end = codespanCloseTag
+			end = strongCloseTag
 		} else if nodeLiteralSize(node) > 30 {
 			end = tableCellEnd
 		}
