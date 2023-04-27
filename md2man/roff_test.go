@@ -10,6 +10,17 @@ type TestParams struct {
 	extensions blackfriday.Extensions
 }
 
+func TestCodeBlocks(t *testing.T) {
+	tests := []string{
+		"```\nsome code\n```\n",
+		".nh\n\n.EX\nsome code\n\n.EE\n",
+
+		"```bash\necho foo\n```\n",
+		".nh\n\n.EX\necho foo\n\n.EE\n",
+	}
+	doTestsParam(t, tests, TestParams{blackfriday.FencedCode})
+}
+
 func TestEmphasis(t *testing.T) {
 	tests := []string{
 		"nothing inline\n",
