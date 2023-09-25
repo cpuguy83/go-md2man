@@ -398,6 +398,20 @@ July 2014, updated by Sven Dowideit (SvenDowideit@home.org.au)
 	doTestsInline(t, tests)
 }
 
+func TestComments(t *testing.T) {
+	blockTests := []string{
+		"First paragraph\n\n<!-- Comment, HTML should be separated by blank lines -->\n\nSecond paragraph\n",
+		".nh\n\n.PP\nFirst paragraph\n\n.PP\nSecond paragraph\n",
+	}
+	doTestsParam(t, blockTests, TestParams{})
+
+	inlineTests := []string{
+		"Text with a com<!--...-->ment in the middle\n",
+		".nh\n\n.PP\nText with a comment in the middle\n",
+	}
+	doTestsInlineParam(t, inlineTests, TestParams{})
+}
+
 func execRecoverableTestSuite(t *testing.T, tests []string, params TestParams, suite func(candidate *string)) {
 	// Catch and report panics. This is useful when running 'go test -v' on
 	// the integration server. When developing, though, crash dump is often

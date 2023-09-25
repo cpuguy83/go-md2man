@@ -167,6 +167,11 @@ func (r *roffRenderer) RenderNode(w io.Writer, node *blackfriday.Node, entering 
 		r.handleTableCell(w, node, entering)
 	case blackfriday.HTMLSpan:
 		// ignore other HTML tags
+	case blackfriday.HTMLBlock:
+		if bytes.HasPrefix(node.Literal, []byte("<!--")) {
+			break // ignore comments, no warning
+		}
+		fmt.Fprintln(os.Stderr, "WARNING: go-md2man does not handle node type "+node.Type.String())
 	default:
 		fmt.Fprintln(os.Stderr, "WARNING: go-md2man does not handle node type "+node.Type.String())
 	}
