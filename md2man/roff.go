@@ -35,7 +35,7 @@ const (
 	hruleTag         = "\n.ti 0\n\\l'\\n(.lu'\n"
 	linkTag          = "\n\\[la]"
 	linkCloseTag     = "\\[ra]"
-	codespanTag      = "\\fB\\fC"
+	codespanTag      = "\\fB"
 	codespanCloseTag = "\\fR"
 	codeTag          = "\n.EX\n"
 	codeCloseTag     = "\n.EE\n"

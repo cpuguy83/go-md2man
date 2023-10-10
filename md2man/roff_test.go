@@ -128,10 +128,10 @@ func TestStrong(t *testing.T) {
 		".nh\n\n.PP\nmix of **markers__\n",
 
 		"**`/usr`** : this folder is named `usr`\n",
-		".nh\n\n.PP\n\\fB\\fB\\fC/usr\\fR\\fP : this folder is named \\fB\\fCusr\\fR\n",
+		".nh\n\n.PP\n\\fB\\fB/usr\\fR\\fP : this folder is named \\fBusr\\fR\n",
 
 		"**`/usr`** :\n\n this folder is named `usr`\n",
-		".nh\n\n.PP\n\\fB\\fB\\fC/usr\\fR\\fP :\n\n.PP\nthis folder is named \\fB\\fCusr\\fR\n",
+		".nh\n\n.PP\n\\fB\\fB/usr\\fR\\fP :\n\n.PP\nthis folder is named \\fBusr\\fR\n",
 	}
 	doTestsInline(t, tests)
 }
@@ -168,13 +168,13 @@ func TestEmphasisMix(t *testing.T) {
 func TestCodeSpan(t *testing.T) {
 	tests := []string{
 		"`source code`\n",
-		".nh\n\n.PP\n\\fB\\fCsource code\\fR\n",
+		".nh\n\n.PP\n\\fBsource code\\fR\n",
 
 		"` source code with spaces `\n",
-		".nh\n\n.PP\n\\fB\\fCsource code with spaces\\fR\n",
+		".nh\n\n.PP\n\\fBsource code with spaces\\fR\n",
 
 		"` source code with spaces `not here\n",
-		".nh\n\n.PP\n\\fB\\fCsource code with spaces\\fRnot here\n",
+		".nh\n\n.PP\n\\fBsource code with spaces\\fRnot here\n",
 
 		"a `single marker\n",
 		".nh\n\n.PP\na `single marker\n",
@@ -186,19 +186,19 @@ func TestCodeSpan(t *testing.T) {
 		".nh\n\n.PP\nmarkers with  a space\n",
 
 		"`source code` and a `stray\n",
-		".nh\n\n.PP\n\\fB\\fCsource code\\fR and a `stray\n",
+		".nh\n\n.PP\n\\fBsource code\\fR and a `stray\n",
 
 		"`source *with* _awkward characters_ in it`\n",
-		".nh\n\n.PP\n\\fB\\fCsource *with* _awkward characters_ in it\\fR\n",
+		".nh\n\n.PP\n\\fBsource *with* _awkward characters_ in it\\fR\n",
 
 		"`split over\ntwo lines`\n",
-		".nh\n\n.PP\n\\fB\\fCsplit over\ntwo lines\\fR\n",
+		".nh\n\n.PP\n\\fBsplit over\ntwo lines\\fR\n",
 
 		"```multiple ticks``` for the marker\n",
-		".nh\n\n.PP\n\\fB\\fCmultiple ticks\\fR for the marker\n",
+		".nh\n\n.PP\n\\fBmultiple ticks\\fR for the marker\n",
 
 		"```multiple ticks `with` ticks inside```\n",
-		".nh\n\n.PP\n\\fB\\fCmultiple ticks `with` ticks inside\\fR\n",
+		".nh\n\n.PP\n\\fBmultiple ticks `with` ticks inside\\fR\n",
 	}
 	doTestsInline(t, tests)
 }
@@ -331,9 +331,9 @@ row one	This is a short line.
 row|two	Col1 should not wrap.
 row three	no|wrap
 row four	Inline \fIcursive\fP should not wrap.
-row five	Inline \fB\fCcode markup\fR should not wrap.
+row five	Inline \fBcode markup\fR should not wrap.
 row six	T{
-A line that's longer than 30 characters with inline \fB\fCcode markup\fR or \fIcursive\fP should not wrap.
+A line that's longer than 30 characters with inline \fBcode markup\fR or \fIcursive\fP should not wrap.
 T}
 row seven	T{
 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent eu ipsum eget tortor aliquam accumsan. Quisque ac turpis convallis, sagittis urna ac, tempor est. Mauris nibh arcu, hendrerit id eros sed, sodales lacinia ex. Suspendisse sed condimentum urna, vitae mattis lectus. Mauris imperdiet magna vel purus pretium, id interdum libero.
