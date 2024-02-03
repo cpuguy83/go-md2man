@@ -12,4 +12,4 @@ Uses blackfriday to process markdown into man pages.
 ### How to contribute
 
 We use go modules to manage dependencies.
-As such you must be using at lest go1.11.
+As such you must be using at least go1.11.
