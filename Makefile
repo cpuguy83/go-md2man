@@ -29,9 +29,6 @@ ifneq ($(GOARM),)
 export GOARM
 endif
 
-vars:
-	@go env
-
 .PHONY:
 build: bin/go-md2man
 

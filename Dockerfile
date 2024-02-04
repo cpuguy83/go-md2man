@@ -1,8 +1,9 @@
 ARG GO_VERSION=1.21
 
-FROM golang:${GO_VERSION} AS build
+FROM --platform=${BUILDPLATFORM} golang:${GO_VERSION} AS build
 COPY . /go/src/github.com/cpuguy83/go-md2man
 WORKDIR /go/src/github.com/cpuguy83/go-md2man
+ARG TARGETOS TARGETARCH TARGETVARIANT
 RUN \
     --mount=type=cache,target=/go/pkg/mod \
     --mount=type=cache,target=/root/.cache/go-build \
