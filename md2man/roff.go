@@ -21,34 +21,35 @@ type roffRenderer struct {
 }
 
 const (
-	titleHeader      = ".TH "
-	topLevelHeader   = "\n\n.SH "
-	secondLevelHdr   = "\n.SH "
-	otherHeader      = "\n.SS "
-	crTag            = "\n"
-	emphTag          = "\\fI"
-	emphCloseTag     = "\\fP"
-	strongTag        = "\\fB"
-	strongCloseTag   = "\\fP"
-	breakTag         = "\n.br\n"
-	paraTag          = "\n.PP\n"
-	hruleTag         = "\n.ti 0\n\\l'\\n(.lu'\n"
-	linkTag          = "\n\\[la]"
-	linkCloseTag     = "\\[ra]"
-	codespanTag      = "\\fB"
-	codespanCloseTag = "\\fR"
-	codeTag          = "\n.EX\n"
-	codeCloseTag     = "\n.EE\n"
-	quoteTag         = "\n.PP\n.RS\n"
-	quoteCloseTag    = "\n.RE\n"
-	listTag          = "\n.RS\n"
-	listCloseTag     = "\n.RE\n"
-	dtTag            = "\n.TP\n"
-	dd2Tag           = "\n"
-	tableStart       = "\n.TS\nallbox;\n"
-	tableEnd         = ".TE\n"
-	tableCellStart   = "T{\n"
-	tableCellEnd     = "\nT}\n"
+	titleHeader       = ".TH "
+	topLevelHeader    = "\n\n.SH "
+	secondLevelHdr    = "\n.SH "
+	otherHeader       = "\n.SS "
+	crTag             = "\n"
+	emphTag           = "\\fI"
+	emphCloseTag      = "\\fP"
+	strongTag         = "\\fB"
+	strongCloseTag    = "\\fP"
+	breakTag          = "\n.br\n"
+	paraTag           = "\n.PP\n"
+	hruleTag          = "\n.ti 0\n\\l'\\n(.lu'\n"
+	linkTag           = "\n\\[la]"
+	linkCloseTag      = "\\[ra]"
+	codespanTag       = "\\fB"
+	codespanCloseTag  = "\\fR"
+	codeTag           = "\n.EX\n"
+	codeCloseTag      = "\n.EE\n"
+	quoteTag          = "\n.PP\n.RS\n"
+	quoteCloseTag     = "\n.RE\n"
+	listTag           = "\n.RS\n"
+	listCloseTag      = "\n.RE\n"
+	dtTag             = "\n.TP\n"
+	dd2Tag            = "\n"
+	tableStart        = "\n.TS\nallbox;\n"
+	tableEnd          = ".TE\n"
+	tableCellStart    = "T{\n"
+	tableCellEnd      = "\nT}\n"
+	tablePreprocessor = `'\" t`
 )
 
 // NewRoffRenderer creates a new blackfriday Renderer for generating roff documents
@@ -75,6 +76,16 @@ func (r *roffRenderer) GetExtensions() blackfriday.Extensions {
 
 // RenderHeader handles outputting the header at document start
 func (r *roffRenderer) RenderHeader(w io.Writer, ast *blackfriday.Node) {
+	// We need to walk the tree to check if there are any tables.
+	// If there are, we need to enable the roff table preprocessor.
+	ast.Walk(func(node *blackfriday.Node, entering bool) blackfriday.WalkStatus {
+		if node.Type == blackfriday.Table {
+			out(w, tablePreprocessor+"\n")
+			return blackfriday.Terminate
+		}
+		return blackfriday.GoToNext
+	})
+
 	// disable hyphenation
 	out(w, ".nh\n")
 }
