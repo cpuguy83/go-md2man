@@ -50,12 +50,3 @@ bin/go-md2man: go.mod go.sum md2man/* *.go
 .PHONY: mod
 mod:
 	@go mod tidy
-
-.PHONY: check-mod
-check-mod: # verifies that module changes for go.mod and go.sum are checked in
-	@hack/ci/check_mods.sh
-
-.PHONY: vendor
-vendor: mod
-	@go mod vendor -v
-
