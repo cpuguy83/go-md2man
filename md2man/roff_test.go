@@ -263,7 +263,8 @@ func TestTable(t *testing.T) {
 | zebra        | Sometimes black and sometimes white, depending on the stripe.     |
 | robin | red. |
 `,
-		`.nh
+		`'\" t
+.nh
 
 .TS
 allbox;
@@ -292,7 +293,8 @@ func TestTableWithEmptyCell(t *testing.T) {
 | row one  |       |      | 
 | row two  | x     |      |
 `,
-		`.nh
+		`'\" t
+.nh
 
 .TS
 allbox;
@@ -320,7 +322,8 @@ func TestTableWrapping(t *testing.T) {
 | row six     | A line that's longer than 30 characters with inline ` + "`code markup`" + ` or _cursive_ should not wrap.  |
 | row seven   | Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent eu ipsum eget tortor aliquam accumsan. Quisque ac turpis convallis, sagittis urna ac, tempor est. Mauris nibh arcu, hendrerit id eros sed, sodales lacinia ex. Suspendisse sed condimentum urna, vitae mattis lectus. Mauris imperdiet magna vel purus pretium, id interdum libero. |
 `,
-		`.nh
+		`'\" t
+.nh
 
 .TS
 allbox;
