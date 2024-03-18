@@ -13,10 +13,14 @@ type TestParams struct {
 func TestCodeBlocks(t *testing.T) {
 	tests := []string{
 		"```\nsome code\n```\n",
-		".nh\n\n.EX\nsome code\n\n.EE\n",
+		".nh\n\n.EX\nsome code\n.EE\n",
 
 		"```bash\necho foo\n```\n",
-		".nh\n\n.EX\necho foo\n\n.EE\n",
+		".nh\n\n.EX\necho foo\n.EE\n",
+
+		// make sure literal new lines surrounding the markdown block are preserved as they are intentional
+		"```bash\n\nsome code\n\n```",
+		".nh\n\n.EX\n\nsome code\n\n.EE\n",
 	}
 	doTestsParam(t, tests, TestParams{blackfriday.FencedCode})
 }

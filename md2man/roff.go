@@ -38,7 +38,7 @@ const (
 	codespanTag       = "\\fB"
 	codespanCloseTag  = "\\fR"
 	codeTag           = "\n.EX\n"
-	codeCloseTag      = "\n.EE\n"
+	codeCloseTag      = ".EE\n" // Do not prepend a newline character since code blocks, by definition, include a newline already (or at least as how blackfriday gives us on).
 	quoteTag          = "\n.PP\n.RS\n"
 	quoteCloseTag     = "\n.RE\n"
 	listTag           = "\n.RS\n"
