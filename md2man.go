@@ -19,14 +19,14 @@ func main() {
 	flag.Parse()
 
 	inFile := os.Stdin
-	if *inFilePath != "" {
+	if *inFilePath != "" && *inFilePath != "-" {
 		inFile, err = os.Open(*inFilePath)
 		if err != nil {
 			fmt.Println(err)
 			os.Exit(1)
 		}
+		defer inFile.Close() // nolint: errcheck
 	}
-	defer inFile.Close() // nolint: errcheck
 
 	doc, err := ioutil.ReadAll(inFile)
 	if err != nil {
@@ -37,7 +37,7 @@ func main() {
 	out := md2man.Render(doc)
 
 	outFile := os.Stdout
-	if *outFilePath != "" {
+	if *outFilePath != "" && *outFilePath != "-" {
 		outFile, err = os.Create(*outFilePath)
 		if err != nil {
 			fmt.Println(err)
