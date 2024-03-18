@@ -1,6 +1,7 @@
 package md2man
 
 import (
+	"bufio"
 	"bytes"
 	"fmt"
 	"io"
@@ -333,6 +334,28 @@ func out(w io.Writer, output string) {
 }
 
 func escapeSpecialChars(w io.Writer, text []byte) {
+	scanner := bufio.NewScanner(bytes.NewReader(text))
+
+	// count the number of lines in the text
+	// we need to know this to avoid adding a newline after the last line
+	n := bytes.Count(text, []byte{'\n'})
+	idx := 0
+
+	for scanner.Scan() {
+		dt := scanner.Bytes()
+		if idx < n {
+			idx++
+			dt = append(dt, '\n')
+		}
+		escapeSpecialCharsLine(w, dt)
+	}
+
+	if err := scanner.Err(); err != nil {
+		panic(err)
+	}
+}
+
+func escapeSpecialCharsLine(w io.Writer, text []byte) {
 	for i := 0; i < len(text); i++ {
 		// escape initial apostrophe or period
 		if len(text) >= 1 && (text[0] == '\'' || text[0] == '.') {
