@@ -18,7 +18,8 @@ type roffRenderer struct {
 	listCounters []int
 	firstHeader  bool
 	firstDD      bool
-	listDepth    int
+	itemStarted  bool
+	lastDD       bool
 }
 
 const (
@@ -42,9 +43,9 @@ const (
 	codeCloseTag      = ".EE\n" // Do not prepend a newline character since code blocks, by definition, include a newline already (or at least as how blackfriday gives us on).
 	quoteTag          = "\n.PP\n.RS\n"
 	quoteCloseTag     = "\n.RE\n"
-	listTag           = "\n.RS\n"
-	listCloseTag      = "\n.RE\n"
-	dtTag             = "\n.TP\n"
+	itemTag           = "\n.RS 5\n"
+	itemCloseTag      = "\n.RE\n"
+	dtTag             = "\n.TP 5\n"
 	dd2Tag            = "\n"
 	tableStart        = "\n.TS\nallbox;\n"
 	tableEnd          = ".TE\n"
@@ -141,8 +142,14 @@ func (r *roffRenderer) RenderNode(w io.Writer, node *blackfriday.Node, entering 
 	case blackfriday.Document:
 		break
 	case blackfriday.Paragraph:
-		// roff .PP markers break lists
-		if r.listDepth > 0 {
+		if r.firstDD {
+			return blackfriday.GoToNext
+		}
+		if r.itemStarted {
+			if !entering {
+				r.itemStarted = false
+				out(w, itemTag)
+			}
 			return blackfriday.GoToNext
 		}
 		if entering {
@@ -209,34 +216,31 @@ func (r *roffRenderer) handleHeading(w io.Writer, node *blackfriday.Node, enteri
 }
 
 func (r *roffRenderer) handleList(w io.Writer, node *blackfriday.Node, entering bool) {
-	openTag := listTag
-	closeTag := listCloseTag
-	if node.ListFlags&blackfriday.ListTypeDefinition != 0 {
-		// tags for definition lists handled within Item node
-		openTag = ""
-		closeTag = ""
-	}
 	if entering {
-		r.listDepth++
 		if node.ListFlags&blackfriday.ListTypeOrdered != 0 {
 			r.listCounters = append(r.listCounters, 1)
 		}
-		out(w, openTag)
 	} else {
 		if node.ListFlags&blackfriday.ListTypeOrdered != 0 {
 			r.listCounters = r.listCounters[:len(r.listCounters)-1]
+		} else if node.ListFlags&blackfriday.ListTypeDefinition != 0 {
+			out(w, itemCloseTag)
+			r.lastDD = false
 		}
-		out(w, closeTag)
-		r.listDepth--
 	}
 }
 
 func (r *roffRenderer) handleItem(w io.Writer, node *blackfriday.Node, entering bool) {
 	if entering {
 		if node.ListFlags&blackfriday.ListTypeOrdered != 0 {
+			r.itemStarted = true
 			out(w, fmt.Sprintf(".IP \"%3d.\" 5\n", r.listCounters[len(r.listCounters)-1]))
 			r.listCounters[len(r.listCounters)-1]++
 		} else if node.ListFlags&blackfriday.ListTypeTerm != 0 {
+			if r.lastDD {
+				out(w, itemCloseTag)
+			}
+			r.itemStarted = true
 			// DT (definition term): line just before DD (see below).
 			out(w, dtTag)
 			r.firstDD = true
@@ -247,15 +251,20 @@ func (r *roffRenderer) handleItem(w io.Writer, node *blackfriday.Node, entering 
 			// subsequent ones, as there should be no vertical
 			// whitespace between the DT and the first DD.
 			if r.firstDD {
-				r.firstDD = false
-			} else {
 				out(w, dd2Tag)
+				r.firstDD = false
 			}
 		} else {
-			out(w, ".IP \\(bu 2\n")
+			r.itemStarted = true
+			out(w, ".IP \"   \\(bu\" 5\n")
 		}
+		r.lastDD = false
 	} else {
-		out(w, "\n")
+		if node.ListFlags&(blackfriday.ListTypeTerm|blackfriday.ListTypeDefinition) != 0 {
+			r.lastDD = true
+		} else {
+			out(w, itemCloseTag)
+		}
 	}
 }
 

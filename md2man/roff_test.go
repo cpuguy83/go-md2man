@@ -210,9 +210,11 @@ func TestCodeSpan(t *testing.T) {
 func TestListLists(t *testing.T) {
 	tests := []string{
 		"\n\n**[grpc]**\n: Section for gRPC socket listener settings. Contains three properties:\n - **address** (Default: \"/run/containerd/containerd.sock\")\n - **uid** (Default: 0)\n - **gid** (Default: 0)",
-		".nh\n\n.TP\n\\fB[grpc]\\fP\nSection for gRPC socket listener settings. Contains three properties:\n.RS\n.IP \\(bu 2\n\\fBaddress\\fP (Default: \"/run/containerd/containerd.sock\")\n.IP \\(bu 2\n\\fBuid\\fP (Default: 0)\n.IP \\(bu 2\n\\fBgid\\fP (Default: 0)\n\n.RE\n\n",
+		".nh\n\n.TP 5\n\\fB[grpc]\\fP\nSection for gRPC socket listener settings. Contains three properties:\n.RS 5\n.IP \"   \\(bu\" 5\n\\fBaddress\\fP (Default: \"/run/containerd/containerd.sock\")\n.RS 5\n\n.RE\n.IP \"   \\(bu\" 5\n\\fBuid\\fP (Default: 0)\n.RS 5\n\n.RE\n.IP \"   \\(bu\" 5\n\\fBgid\\fP (Default: 0)\n.RS 5\n\n.RE\n\n.RE\n",
 		"Definition title\n: Definition description one\n: And two\n: And three\n",
-		".nh\n\n.TP\nDefinition title\nDefinition description one\n\nAnd two\n\nAnd three\n",
+		".nh\n\n.TP 5\nDefinition title\nDefinition description one\n.RS 5\n\n.PP\nAnd two\n\n.PP\nAnd three\n\n.RE\n",
+		"- item 1\n- item 2\n    second par",
+		".nh\n.IP \"   \\(bu\" 5\nitem 1\n.RS 5\n\n.RE\n.IP \"   \\(bu\" 5\nitem 2\nsecond par\n.RS 5\n\n.RE\n",
 	}
 	doTestsParam(t, tests, TestParams{blackfriday.DefinitionLists})
 }
