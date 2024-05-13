@@ -33,6 +33,6 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v4
-      - uses: golangci/golangci-lint-action@v4.0.0
+      - uses: golangci/golangci-lint-action@v6.0.1
         with:
           version: v1.55
