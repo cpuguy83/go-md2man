@@ -17,7 +17,6 @@ type roffRenderer struct {
 	extensions   blackfriday.Extensions
 	listCounters []int
 	firstHeader  bool
-	firstDD      bool
 	listDepth    int
 }
 
@@ -239,16 +238,13 @@ func (r *roffRenderer) handleItem(w io.Writer, node *blackfriday.Node, entering 
 		} else if node.ListFlags&blackfriday.ListTypeTerm != 0 {
 			// DT (definition term): line just before DD (see below).
 			out(w, dtTag)
-			r.firstDD = true
 		} else if node.ListFlags&blackfriday.ListTypeDefinition != 0 {
 			// DD (definition description): line that starts with ": ".
 			//
 			// We have to distinguish between the first DD and the
 			// subsequent ones, as there should be no vertical
 			// whitespace between the DT and the first DD.
-			if r.firstDD {
-				r.firstDD = false
-			} else {
+			if node.Prev != nil && node.Prev.ListFlags&(blackfriday.ListTypeTerm|blackfriday.ListTypeDefinition) == blackfriday.ListTypeDefinition {
 				out(w, dd2Tag)
 			}
 		} else {
