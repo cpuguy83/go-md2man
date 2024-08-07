@@ -14,7 +14,6 @@ import (
 // roffRenderer implements the blackfriday.Renderer interface for creating
 // roff format (manpages) from markdown text
 type roffRenderer struct {
-	extensions   blackfriday.Extensions
 	listCounters []int
 	firstHeader  bool
 	listDepth    int
@@ -55,23 +54,18 @@ const (
 // NewRoffRenderer creates a new blackfriday Renderer for generating roff documents
 // from markdown
 func NewRoffRenderer() *roffRenderer { // nolint: golint
-	var extensions blackfriday.Extensions
-
-	extensions |= blackfriday.NoIntraEmphasis
-	extensions |= blackfriday.Tables
-	extensions |= blackfriday.FencedCode
-	extensions |= blackfriday.SpaceHeadings
-	extensions |= blackfriday.Footnotes
-	extensions |= blackfriday.Titleblock
-	extensions |= blackfriday.DefinitionLists
-	return &roffRenderer{
-		extensions: extensions,
-	}
+	return &roffRenderer{}
 }
 
 // GetExtensions returns the list of extensions used by this renderer implementation
-func (r *roffRenderer) GetExtensions() blackfriday.Extensions {
-	return r.extensions
+func (*roffRenderer) GetExtensions() blackfriday.Extensions {
+	return blackfriday.NoIntraEmphasis |
+		blackfriday.Tables |
+		blackfriday.FencedCode |
+		blackfriday.SpaceHeadings |
+		blackfriday.Footnotes |
+		blackfriday.Titleblock |
+		blackfriday.DefinitionLists
 }
 
 // RenderHeader handles outputting the header at document start
