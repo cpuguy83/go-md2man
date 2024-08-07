@@ -41,7 +41,7 @@ const (
 	quoteTag          = "\n.PP\n.RS\n"
 	quoteCloseTag     = "\n.RE\n"
 	listTag           = "\n.RS\n"
-	listCloseTag      = "\n.RE\n"
+	listCloseTag      = ".RE\n"
 	dtTag             = "\n.TP\n"
 	dd2Tag            = "\n"
 	tableStart        = "\n.TS\nallbox;\n"
@@ -150,14 +150,21 @@ func (r *roffRenderer) RenderNode(w io.Writer, node *blackfriday.Node, entering 
 	case blackfriday.Document:
 		break
 	case blackfriday.Paragraph:
-		// roff .PP markers break lists
-		if r.listDepth > 0 {
-			return blackfriday.GoToNext
-		}
-		if entering && (node.Prev == nil || node.Prev.Type != blackfriday.Heading) {
-			out(w, paraTag)
+		if entering {
+			if r.listDepth > 0 {
+				// roff .PP markers break lists
+				if node.Prev != nil { // continued paragraph
+					out(w, crTag)
+				}
+			} else if node.Prev != nil && node.Prev.Type == blackfriday.Heading {
+				out(w, crTag)
+			} else {
+				out(w, paraTag)
+			}
 		} else {
-			out(w, crTag)
+			if node.Next == nil || node.Next.Type != blackfriday.List {
+				out(w, crTag)
+			}
 		}
 	case blackfriday.BlockQuote:
 		if entering {
@@ -260,8 +267,6 @@ func (r *roffRenderer) handleItem(w io.Writer, node *blackfriday.Node, entering 
 		} else {
 			out(w, ".IP \\(bu 2\n")
 		}
-	} else {
-		out(w, "\n")
 	}
 }
 
