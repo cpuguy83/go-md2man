@@ -154,7 +154,11 @@ func (r *roffRenderer) RenderNode(w io.Writer, node *blackfriday.Node, entering 
 			if r.listDepth > 0 {
 				// roff .PP markers break lists
 				if node.Prev != nil { // continued paragraph
-					out(w, crTag)
+					if node.Prev.Type == blackfriday.List && node.Prev.ListFlags&blackfriday.ListTypeDefinition == 0 {
+						out(w, ".IP\n")
+					} else {
+						out(w, crTag)
+					}
 				}
 			} else if node.Prev != nil && node.Prev.Type == blackfriday.Heading {
 				out(w, crTag)
@@ -227,6 +231,10 @@ func (r *roffRenderer) handleHeading(w io.Writer, node *blackfriday.Node, enteri
 func (r *roffRenderer) handleList(w io.Writer, node *blackfriday.Node, entering bool) {
 	openTag := listTag
 	closeTag := listCloseTag
+	if (entering && r.listDepth == 0) || (!entering && r.listDepth == 1) {
+		openTag = crTag
+		closeTag = ""
+	}
 	if node.ListFlags&blackfriday.ListTypeDefinition != 0 {
 		// tags for definition lists handled within Item node
 		openTag = ""
@@ -262,7 +270,14 @@ func (r *roffRenderer) handleItem(w io.Writer, node *blackfriday.Node, entering 
 			// subsequent ones, as there should be no vertical
 			// whitespace between the DT and the first DD.
 			if node.Prev != nil && node.Prev.ListFlags&(blackfriday.ListTypeTerm|blackfriday.ListTypeDefinition) == blackfriday.ListTypeDefinition {
-				out(w, dd2Tag)
+				if node.Prev.Type == blackfriday.Item &&
+					node.Prev.LastChild != nil &&
+					node.Prev.LastChild.Type == blackfriday.List &&
+					node.Prev.LastChild.ListFlags&blackfriday.ListTypeDefinition == 0 {
+					out(w, ".IP\n")
+				} else {
+					out(w, dd2Tag)
+				}
 			}
 		} else {
 			out(w, ".IP \\(bu 2\n")

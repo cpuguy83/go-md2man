@@ -207,6 +207,14 @@ func TestCodeSpan(t *testing.T) {
 	doTestsInline(t, tests)
 }
 
+func TestFlatLists(t *testing.T) {
+	tests := []string{
+		"Paragraph\n\n- item one\n- item two\n- item three\n",
+		".nh\n\n.PP\nParagraph\n.IP \\(bu 2\nitem one\n.IP \\(bu 2\nitem two\n.IP \\(bu 2\nitem three\n",
+	}
+	doTestsInline(t, tests)
+}
+
 func TestListLists(t *testing.T) {
 	tests := []string{
 		"\n\n**[grpc]**\n: Section for gRPC socket listener settings. Contains three properties:\n - **address** (Default: \"/run/containerd/containerd.sock\")\n - **uid** (Default: 0)\n - **gid** (Default: 0)",
