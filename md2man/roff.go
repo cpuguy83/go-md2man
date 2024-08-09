@@ -103,7 +103,23 @@ func (r *roffRenderer) RenderNode(w io.Writer, node *blackfriday.Node, entering 
 
 	switch node.Type {
 	case blackfriday.Text:
-		escapeSpecialChars(w, node.Literal)
+		// Special case: format the NAME section as required for proper whatis parsing.
+		// Refer to the lexgrog(1) and groff_man(7) manual pages for details.
+		if node.Parent != nil &&
+			node.Parent.Type == blackfriday.Paragraph &&
+			node.Parent.Prev != nil &&
+			node.Parent.Prev.Type == blackfriday.Heading &&
+			node.Parent.Prev.FirstChild != nil &&
+			bytes.EqualFold(node.Parent.Prev.FirstChild.Literal, []byte("NAME")) {
+			before, after, found := bytes.Cut(node.Literal, []byte(" - "))
+			escapeSpecialChars(w, before)
+			if found {
+				out(w, ` \- `)
+				escapeSpecialChars(w, after)
+			}
+		} else {
+			escapeSpecialChars(w, node.Literal)
+		}
 	case blackfriday.Softbreak:
 		out(w, crTag)
 	case blackfriday.Hardbreak:

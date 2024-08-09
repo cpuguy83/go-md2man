@@ -424,7 +424,13 @@ func TestComments(t *testing.T) {
 func TestHeadings(t *testing.T) {
 	tests := []string{
 		"# title\n\n# NAME\ncommand - description\n\n# SYNOPSIS\nA short description\n\nWhich spans multiple paragraphs\n",
-		".nh\n.TH title\n\n.SH NAME\ncommand - description\n\n\n.SH SYNOPSIS\nA short description\n\n.PP\nWhich spans multiple paragraphs\n",
+		".nh\n.TH title\n\n.SH NAME\ncommand \\- description\n\n\n.SH SYNOPSIS\nA short description\n\n.PP\nWhich spans multiple paragraphs\n",
+
+		"# title\n\n# Name\nmy-command, other - description - with - hyphens\n",
+		".nh\n.TH title\n\n.SH Name\nmy-command, other \\- description - with - hyphens\n",
+
+		"# title\n\n# Not NAME\nsome - other - text\n",
+		".nh\n.TH title\n\n.SH Not NAME\nsome - other - text\n",
 	}
 	doTestsInline(t, tests)
 }
