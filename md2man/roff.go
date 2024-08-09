@@ -145,7 +145,7 @@ func (r *roffRenderer) RenderNode(w io.Writer, node *blackfriday.Node, entering 
 		if r.listDepth > 0 {
 			return blackfriday.GoToNext
 		}
-		if entering {
+		if entering && (node.Prev == nil || node.Prev.Type != blackfriday.Heading) {
 			out(w, paraTag)
 		} else {
 			out(w, crTag)

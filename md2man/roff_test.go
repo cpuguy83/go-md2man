@@ -421,6 +421,14 @@ func TestComments(t *testing.T) {
 	doTestsInlineParam(t, inlineTests, TestParams{})
 }
 
+func TestHeadings(t *testing.T) {
+	tests := []string{
+		"# title\n\n# NAME\ncommand - description\n\n# SYNOPSIS\nA short description\n\nWhich spans multiple paragraphs\n",
+		".nh\n.TH title\n\n.SH NAME\ncommand - description\n\n\n.SH SYNOPSIS\nA short description\n\n.PP\nWhich spans multiple paragraphs\n",
+	}
+	doTestsInline(t, tests)
+}
+
 func execRecoverableTestSuite(t *testing.T, tests []string, params TestParams, suite func(candidate *string)) {
 	// Catch and report panics. This is useful when running 'go test -v' on
 	// the integration server. When developing, though, crash dump is often
