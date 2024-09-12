@@ -14,10 +14,8 @@ import (
 // roffRenderer implements the blackfriday.Renderer interface for creating
 // roff format (manpages) from markdown text
 type roffRenderer struct {
-	extensions   blackfriday.Extensions
 	listCounters []int
 	firstHeader  bool
-	firstDD      bool
 	listDepth    int
 }
 
@@ -56,23 +54,18 @@ const (
 // NewRoffRenderer creates a new blackfriday Renderer for generating roff documents
 // from markdown
 func NewRoffRenderer() *roffRenderer { // nolint: golint
-	var extensions blackfriday.Extensions
-
-	extensions |= blackfriday.NoIntraEmphasis
-	extensions |= blackfriday.Tables
-	extensions |= blackfriday.FencedCode
-	extensions |= blackfriday.SpaceHeadings
-	extensions |= blackfriday.Footnotes
-	extensions |= blackfriday.Titleblock
-	extensions |= blackfriday.DefinitionLists
-	return &roffRenderer{
-		extensions: extensions,
-	}
+	return &roffRenderer{}
 }
 
 // GetExtensions returns the list of extensions used by this renderer implementation
-func (r *roffRenderer) GetExtensions() blackfriday.Extensions {
-	return r.extensions
+func (*roffRenderer) GetExtensions() blackfriday.Extensions {
+	return blackfriday.NoIntraEmphasis |
+		blackfriday.Tables |
+		blackfriday.FencedCode |
+		blackfriday.SpaceHeadings |
+		blackfriday.Footnotes |
+		blackfriday.Titleblock |
+		blackfriday.DefinitionLists
 }
 
 // RenderHeader handles outputting the header at document start
@@ -239,16 +232,13 @@ func (r *roffRenderer) handleItem(w io.Writer, node *blackfriday.Node, entering 
 		} else if node.ListFlags&blackfriday.ListTypeTerm != 0 {
 			// DT (definition term): line just before DD (see below).
 			out(w, dtTag)
-			r.firstDD = true
 		} else if node.ListFlags&blackfriday.ListTypeDefinition != 0 {
 			// DD (definition description): line that starts with ": ".
 			//
 			// We have to distinguish between the first DD and the
 			// subsequent ones, as there should be no vertical
 			// whitespace between the DT and the first DD.
-			if r.firstDD {
-				r.firstDD = false
-			} else {
+			if node.Prev != nil && node.Prev.ListFlags&(blackfriday.ListTypeTerm|blackfriday.ListTypeDefinition) == blackfriday.ListTypeDefinition {
 				out(w, dd2Tag)
 			}
 		} else {
