@@ -207,12 +207,22 @@ func TestCodeSpan(t *testing.T) {
 	doTestsInline(t, tests)
 }
 
+func TestFlatLists(t *testing.T) {
+	tests := []string{
+		"Paragraph\n\n- item one\n- item two\n- item three\n",
+		".nh\n\n.PP\nParagraph\n.IP \\(bu 2\nitem one\n.IP \\(bu 2\nitem two\n.IP \\(bu 2\nitem three\n",
+	}
+	doTestsInline(t, tests)
+}
+
 func TestListLists(t *testing.T) {
 	tests := []string{
 		"\n\n**[grpc]**\n: Section for gRPC socket listener settings. Contains three properties:\n - **address** (Default: \"/run/containerd/containerd.sock\")\n - **uid** (Default: 0)\n - **gid** (Default: 0)",
-		".nh\n\n.TP\n\\fB[grpc]\\fP\nSection for gRPC socket listener settings. Contains three properties:\n.RS\n.IP \\(bu 2\n\\fBaddress\\fP (Default: \"/run/containerd/containerd.sock\")\n.IP \\(bu 2\n\\fBuid\\fP (Default: 0)\n.IP \\(bu 2\n\\fBgid\\fP (Default: 0)\n\n.RE\n\n",
+		".nh\n\n.TP\n\\fB[grpc]\\fP\nSection for gRPC socket listener settings. Contains three properties:\n.RS\n.IP \\(bu 2\n\\fBaddress\\fP (Default: \"/run/containerd/containerd.sock\")\n.IP \\(bu 2\n\\fBuid\\fP (Default: 0)\n.IP \\(bu 2\n\\fBgid\\fP (Default: 0)\n.RE\n",
 		"Definition title\n: Definition description one\n: And two\n: And three\n",
 		".nh\n\n.TP\nDefinition title\nDefinition description one\n\nAnd two\n\nAnd three\n",
+		"Definition\n:    description\n\n     split\n\n     over\n\n     multiple\n\n     paragraphs\n",
+		".nh\n\n.TP\nDefinition\ndescription\n\nsplit\n\nover\n\nmultiple\n\nparagraphs\n",
 	}
 	doTestsParam(t, tests, TestParams{blackfriday.DefinitionLists})
 }
