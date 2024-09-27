@@ -7,7 +7,9 @@ Uses blackfriday to process markdown into man pages.
 
 ### Usage
 
-./md2man -in /path/to/markdownfile.md -out /manfile/output/path
+```
+./go-md2man -in /path/to/markdownfile.md -out /manfile/output/path
+```
 
 ### How to contribute
 
