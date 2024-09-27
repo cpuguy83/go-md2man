@@ -8,7 +8,7 @@ Uses [blackfriday](https://github.com/russross/blackfriday) to process markdown 
 ### Usage
 
 ```
-./md2man -in /path/to/markdownfile.md -out /manfile/output/path
+./go-md2man -in /path/to/markdownfile.md -out /manfile/output/path
 ```
 
 ### How to contribute
