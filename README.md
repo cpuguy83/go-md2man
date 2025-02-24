@@ -14,8 +14,8 @@ Uses [blackfriday](https://github.com/russross/blackfriday) to process markdown 
 
 You can obtain the pre-built `go-md2man` binary for your OS and arch
 [here](https://github.com/cpuguy83/go-md2man/releases); 
-
 you can also install the `go-md2man` binary directly onto your `$GOBIN` dir with:
+
 ```sh
 go install github.com/cpuguy83/go-md2man@latest
 ```
