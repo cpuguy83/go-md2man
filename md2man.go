@@ -15,23 +15,30 @@ var (
 )
 
 func main() {
+	retcode := 0
 	var err error
 	flag.Parse()
-
 	inFile := os.Stdin
+
+	defer func() {
+		inFile.Close()
+		os.Exit(retcode)
+	}()
+
 	if *inFilePath != "" {
 		inFile, err = os.Open(*inFilePath)
 		if err != nil {
 			fmt.Println(err)
-			os.Exit(1)
+			retcode = 1
+			return
 		}
 	}
-	defer inFile.Close() // nolint: errcheck
 
 	doc, err := ioutil.ReadAll(inFile)
 	if err != nil {
 		fmt.Println(err)
-		os.Exit(1)
+		retcode = 1
+		return
 	}
 
 	out := md2man.Render(doc)
@@ -41,13 +48,14 @@ func main() {
 		outFile, err = os.Create(*outFilePath)
 		if err != nil {
 			fmt.Println(err)
-			os.Exit(1)
+			retcode = 1
+			return
 		}
-		defer outFile.Close() // nolint: errcheck
 	}
 	_, err = outFile.Write(out)
 	if err != nil {
 		fmt.Println(err)
-		os.Exit(1)
+		retcode = 1
+		return
 	}
 }

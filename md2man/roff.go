@@ -11,9 +11,9 @@ import (
 	"github.com/russross/blackfriday/v2"
 )
 
-// roffRenderer implements the blackfriday.Renderer interface for creating
+// RoffRenderer implements the blackfriday.Renderer interface for creating
 // roff format (manpages) from markdown text
-type roffRenderer struct {
+type RoffRenderer struct {
 	listCounters []int
 	firstHeader  bool
 	listDepth    int
@@ -53,12 +53,12 @@ const (
 
 // NewRoffRenderer creates a new blackfriday Renderer for generating roff documents
 // from markdown
-func NewRoffRenderer() *roffRenderer { // nolint: golint
-	return &roffRenderer{}
+func NewRoffRenderer() *RoffRenderer { // nolint: golint
+	return &RoffRenderer{}
 }
 
 // GetExtensions returns the list of extensions used by this renderer implementation
-func (*roffRenderer) GetExtensions() blackfriday.Extensions {
+func (*RoffRenderer) GetExtensions() blackfriday.Extensions {
 	return blackfriday.NoIntraEmphasis |
 		blackfriday.Tables |
 		blackfriday.FencedCode |
@@ -69,7 +69,7 @@ func (*roffRenderer) GetExtensions() blackfriday.Extensions {
 }
 
 // RenderHeader handles outputting the header at document start
-func (r *roffRenderer) RenderHeader(w io.Writer, ast *blackfriday.Node) {
+func (r *RoffRenderer) RenderHeader(w io.Writer, ast *blackfriday.Node) {
 	// We need to walk the tree to check if there are any tables.
 	// If there are, we need to enable the roff table preprocessor.
 	ast.Walk(func(node *blackfriday.Node, entering bool) blackfriday.WalkStatus {
@@ -86,12 +86,12 @@ func (r *roffRenderer) RenderHeader(w io.Writer, ast *blackfriday.Node) {
 
 // RenderFooter handles outputting the footer at the document end; the roff
 // renderer has no footer information
-func (r *roffRenderer) RenderFooter(w io.Writer, ast *blackfriday.Node) {
+func (r *RoffRenderer) RenderFooter(w io.Writer, ast *blackfriday.Node) {
 }
 
 // RenderNode is called for each node in a markdown document; based on the node
 // type the equivalent roff output is sent to the writer
-func (r *roffRenderer) RenderNode(w io.Writer, node *blackfriday.Node, entering bool) blackfriday.WalkStatus {
+func (r *RoffRenderer) RenderNode(w io.Writer, node *blackfriday.Node, entering bool) blackfriday.WalkStatus {
 	walkAction := blackfriday.GoToNext
 
 	switch node.Type {
@@ -210,7 +210,7 @@ func (r *roffRenderer) RenderNode(w io.Writer, node *blackfriday.Node, entering 
 	return walkAction
 }
 
-func (r *roffRenderer) handleHeading(w io.Writer, node *blackfriday.Node, entering bool) {
+func (r *RoffRenderer) handleHeading(w io.Writer, node *blackfriday.Node, entering bool) {
 	if entering {
 		switch node.Level {
 		case 1:
@@ -228,7 +228,7 @@ func (r *roffRenderer) handleHeading(w io.Writer, node *blackfriday.Node, enteri
 	}
 }
 
-func (r *roffRenderer) handleList(w io.Writer, node *blackfriday.Node, entering bool) {
+func (r *RoffRenderer) handleList(w io.Writer, node *blackfriday.Node, entering bool) {
 	openTag := listTag
 	closeTag := listCloseTag
 	if (entering && r.listDepth == 0) || (!entering && r.listDepth == 1) {
@@ -255,7 +255,7 @@ func (r *roffRenderer) handleList(w io.Writer, node *blackfriday.Node, entering 
 	}
 }
 
-func (r *roffRenderer) handleItem(w io.Writer, node *blackfriday.Node, entering bool) {
+func (r *RoffRenderer) handleItem(w io.Writer, node *blackfriday.Node, entering bool) {
 	if entering {
 		if node.ListFlags&blackfriday.ListTypeOrdered != 0 {
 			out(w, fmt.Sprintf(".IP \"%3d.\" 5\n", r.listCounters[len(r.listCounters)-1]))
@@ -285,7 +285,7 @@ func (r *roffRenderer) handleItem(w io.Writer, node *blackfriday.Node, entering 
 	}
 }
 
-func (r *roffRenderer) handleTable(w io.Writer, node *blackfriday.Node, entering bool) {
+func (r *RoffRenderer) handleTable(w io.Writer, node *blackfriday.Node, entering bool) {
 	if entering {
 		out(w, tableStart)
 		// call walker to count cells (and rows?) so format section can be produced
@@ -297,7 +297,7 @@ func (r *roffRenderer) handleTable(w io.Writer, node *blackfriday.Node, entering
 	}
 }
 
-func (r *roffRenderer) handleTableCell(w io.Writer, node *blackfriday.Node, entering bool) {
+func (r *RoffRenderer) handleTableCell(w io.Writer, node *blackfriday.Node, entering bool) {
 	if entering {
 		var start string
 		if node.Prev != nil && node.Prev.Type == blackfriday.TableCell {
