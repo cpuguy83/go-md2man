@@ -26,9 +26,9 @@ builds:
 
 
 archives:
-  - format: tar.gz
+  - format: ['tar.gz']
     # this name template makes the OS and Arch compatible with `uname`.
-    name_template: >-
+    version_template: >-
       {{ .ProjectName }}_
       {{- title .Os }}_
       {{- if eq .Arch "amd64" }}x86_64
@@ -56,6 +56,7 @@ nfpms:
       from Markdown.
     license: MIT
     vendor: go-md2man
+    maintainer: go-md2man
     bindir: /usr/bin
     section: utils
     contents:
