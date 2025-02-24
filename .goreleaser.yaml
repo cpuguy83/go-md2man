@@ -26,9 +26,9 @@ builds:
 
 
 archives:
-  - format: ['tar.gz']
+  - format: tar.gz
     # this name template makes the OS and Arch compatible with `uname`.
-    version_template: >-
+    name_template: >-
       {{ .ProjectName }}_
       {{- title .Os }}_
       {{- if eq .Arch "amd64" }}x86_64
@@ -54,9 +54,9 @@ nfpms:
       Markdown to ROFF converter
       A CLI utility which, as the name implies, generates man pages
       from Markdown.
+    maintainer: go-md2man
     license: MIT
     vendor: go-md2man
-    maintainer: go-md2man
     bindir: /usr/bin
     section: utils
     contents:
