@@ -7,6 +7,11 @@ formatters:
     - gofumpt
 
 linters:
+  enable:
+    - errorlint
+    - nolintlint
+    - unconvert
+    - unparam
   settings:
     staticcheck:
       checks:
