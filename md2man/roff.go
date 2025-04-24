@@ -356,7 +356,7 @@ func countColumns(node *blackfriday.Node) int {
 }
 
 func out(w io.Writer, output string) {
-	io.WriteString(w, output) // nolint: errcheck
+	io.WriteString(w, output) //nolint:errcheck
 }
 
 func escapeSpecialChars(w io.Writer, text []byte) {
@@ -395,7 +395,7 @@ func escapeSpecialCharsLine(w io.Writer, text []byte) {
 			i++
 		}
 		if i > org {
-			w.Write(text[org:i]) // nolint: errcheck
+			w.Write(text[org:i]) //nolint:errcheck
 		}
 
 		// escape a character
@@ -403,7 +403,7 @@ func escapeSpecialCharsLine(w io.Writer, text []byte) {
 			break
 		}
 
-		w.Write([]byte{'\\', text[i]}) // nolint: errcheck
+		w.Write([]byte{'\\', text[i]}) //nolint:errcheck
 	}
 }
 
