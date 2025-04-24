@@ -53,7 +53,7 @@ const (
 
 // NewRoffRenderer creates a new blackfriday Renderer for generating roff documents
 // from markdown
-func NewRoffRenderer() *roffRenderer { // nolint: golint
+func NewRoffRenderer() *roffRenderer {
 	return &roffRenderer{}
 }
 
