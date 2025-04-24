@@ -47,7 +47,7 @@ const (
 	tableStart        = "\n.TS\nallbox;\n"
 	tableEnd          = ".TE\n"
 	tableCellStart    = "T{\n"
-	tableCellEnd      = "\nT}\n"
+	tableCellEnd      = "\nT}"
 	tablePreprocessor = `'\" t`
 )
 
@@ -316,9 +316,8 @@ func (r *roffRenderer) handleTableCell(w io.Writer, node *blackfriday.Node, ente
 		} else if nodeLiteralSize(node) > 30 {
 			end = tableCellEnd
 		}
-		if node.Next == nil && end != tableCellEnd {
-			// Last cell: need to carriage return if we are at the end of the
-			// header row and content isn't wrapped in a "tablecell"
+		if node.Next == nil {
+			// Last cell: need to carriage return if we are at the end of the header row.
 			end += crTag
 		}
 		out(w, end)

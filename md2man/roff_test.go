@@ -276,6 +276,7 @@ func TestTable(t *testing.T) {
 | wombat     | No idea.      |
 | zebra        | Sometimes black and sometimes white, depending on the stripe.     |
 | robin | red. |
+| Meerschweinchen a.k.a. guinea pig | Varies. |
 `,
 		`'\" t
 .nh
@@ -293,6 +294,9 @@ zebra	T{
 Sometimes black and sometimes white, depending on the stripe.
 T}
 robin	red.
+T{
+Meerschweinchen a.k.a. guinea pig
+T}	Varies.
 .TE
 `,
 	}
