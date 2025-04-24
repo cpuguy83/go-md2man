@@ -445,7 +445,7 @@ func TestHeadings(t *testing.T) {
 	doTestsInline(t, tests)
 }
 
-func execRecoverableTestSuite(t *testing.T, tests []string, params TestParams, suite func(candidate *string)) {
+func execRecoverableTestSuite(t *testing.T, suite func(candidate *string)) {
 	// Catch and report panics. This is useful when running 'go test -v' on
 	// the integration server. When developing, though, crash dump is often
 	// preferable, so recovery can be easily turned off with doRecover = false.
@@ -468,7 +468,7 @@ func runMarkdown(input string, params TestParams) string {
 }
 
 func doTestsParam(t *testing.T, tests []string, params TestParams) {
-	execRecoverableTestSuite(t, tests, params, func(candidate *string) {
+	execRecoverableTestSuite(t, func(candidate *string) {
 		for i := 0; i+1 < len(tests); i += 2 {
 			input := tests[i]
 			t.Run(input, func(t *testing.T) {
