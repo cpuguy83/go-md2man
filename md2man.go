@@ -4,7 +4,9 @@ import (
 	"flag"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"os"
+	"path/filepath"
 
 	"github.com/cpuguy83/go-md2man/v2/md2man"
 )
@@ -14,6 +16,11 @@ var (
 	outFilePath = flag.String("out", "", "`path` to output file processed file (default: stdout)")
 )
 
+func init() {
+	log.SetFlags(0)
+	log.SetPrefix(filepath.Base(os.Args[0]) + ": ")
+}
+
 func main() {
 	var err error
 	flag.Parse()
@@ -22,16 +29,14 @@ func main() {
 	if *inFilePath != "" {
 		inFile, err = os.Open(*inFilePath)
 		if err != nil {
-			fmt.Println(err)
-			os.Exit(1)
+			log.Fatal(err)
 		}
 	}
 	defer inFile.Close() //nolint:errcheck
 
 	doc, err := ioutil.ReadAll(inFile)
 	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
+		log.Fatal(err)
 	}
 
 	out := md2man.Render(doc)
