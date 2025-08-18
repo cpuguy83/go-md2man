@@ -10,8 +10,8 @@ import (
 )
 
 var (
-	inFilePath  = flag.String("in", "", "Path to file to be processed (default: stdin)")
-	outFilePath = flag.String("out", "", "Path to output processed file (default: stdout)")
+	inFilePath  = flag.String("in", "", "`path` to input file to be processed (default: stdin)")
+	outFilePath = flag.String("out", "", "`path` to output file processed file (default: stdout)")
 )
 
 func main() {
