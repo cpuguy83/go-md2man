@@ -373,6 +373,11 @@ func TestLinks(t *testing.T) {
 		".nh\n\n.PP\nSee docs\n\\[la]https://docs\\-foo.docker.com/\\[ra] for\nmore\n",
 		"See <https://docs-foo.docker.com/> for\nmore",
 		".nh\n\n.PP\nSee \n\\[la]https://docs\\-foo.docker.com/\\[ra] for\nmore\n",
+		// #91: backticks / code spans inside link text must not truncate the label
+		"Code in link: [`foo`](https://example.com)\n",
+		".nh\n\n.PP\nCode in link: \\fBfoo\\fR\n\\[la]https://example.com\\[ra]\n",
+		"Some code in link: [some other `code` in here](https://example.com)\n",
+		".nh\n\n.PP\nSome code in link: some other \\fBcode\\fR in here\n\\[la]https://example.com\\[ra]\n",
 	}
 	doTestsInline(t, tests)
 }
