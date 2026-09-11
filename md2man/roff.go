@@ -130,16 +130,26 @@ func (r *roffRenderer) RenderNode(w io.Writer, node *blackfriday.Node, entering 
 			out(w, strongCloseTag)
 		}
 	case blackfriday.Link:
-		// Don't render the link text for automatic links, because this
-		// will only duplicate the URL in the roff output.
-		// See https://daringfireball.net/projects/markdown/syntax#autolink
-		if !bytes.Equal(node.LinkData.Destination, node.FirstChild.Literal) {
-			out(w, string(node.FirstChild.Literal))
+		// Emit destination after children so link text can include nested
+		// inlines (e.g. code spans). Autolinks skip children to avoid
+		// duplicating the URL as text. See #91.
+		// https://daringfireball.net/projects/markdown/syntax#autolink
+		if entering {
+			isAutoLink := node.FirstChild != nil &&
+				node.FirstChild.Next == nil &&
+				node.FirstChild.Type == blackfriday.Text &&
+				bytes.Equal(node.LinkData.Destination, node.FirstChild.Literal)
+			if isAutoLink {
+				// SkipChildren skips the exit call; emit URL now.
+				escapedLink := strings.ReplaceAll(string(node.LinkData.Destination), "-", "\\-")
+				out(w, linkTag+escapedLink+linkCloseTag)
+				return blackfriday.SkipChildren
+			}
+			return blackfriday.GoToNext
 		}
 		// Hyphens in a link must be escaped to avoid word-wrap in the rendered man page.
 		escapedLink := strings.ReplaceAll(string(node.LinkData.Destination), "-", "\\-")
 		out(w, linkTag+escapedLink+linkCloseTag)
-		walkAction = blackfriday.SkipChildren
 	case blackfriday.Image:
 		// ignore images
 		walkAction = blackfriday.SkipChildren
